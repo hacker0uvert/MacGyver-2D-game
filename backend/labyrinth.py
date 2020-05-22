@@ -5,12 +5,18 @@
 """
 
 import numpy as np
+import pickle as pk
 
 def grid_generation():
-    """ Function used to generate the 15 boxes grid
+    """ Function used to generate the 15 boxes grid statically
+    Labyrinth's walls are symbolised with 1, corridors with 0.
+    Structure is stored in the "matrix" binary file
     """
-    # labyrinth's walls are symbolised with 1, corridors with 0. Matrix is generated statically.
-    labyrinth_matrix = np.array([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1], [1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1], [1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1], [1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1], [1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1], [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1], [1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1], [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1], [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1], [1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1], [1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1], [1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]])
+    with open("matrix", "rb") as file:
+	    depickler = pk.Unpickler(file)
+	    labyrinth_matrix = depickler.load()
+	return labyrinth_matrix
+    
 
 def main():
     pass
