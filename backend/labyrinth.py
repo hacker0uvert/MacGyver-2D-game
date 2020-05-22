@@ -15,7 +15,7 @@ def grid_generation():
     with open("matrix", "rb") as file:
 	    depickler = pk.Unpickler(file)
 	    labyrinth_matrix = depickler.load()
-	return labyrinth_matrix
+	    return labyrinth_matrix
     
 
 def main():

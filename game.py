@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-import pygame
+import backend.labyrinth as lbth
+import pygame as pg
 
 def main():
     pass
