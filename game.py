@@ -1,7 +1,10 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-import pygame as pg
+""" MacGyver game : you're gonna have to help him escape!
+"""
+
+# import pygame as pg
 
 import backend.labyrinth as lbth
 

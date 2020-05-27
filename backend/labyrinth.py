@@ -3,6 +3,7 @@
 
 """ Module generating and interacting with the 15 boxes grid labyrinth on which the game is played
 """
+import os
 
 import numpy as np
 
@@ -12,12 +13,16 @@ def grid_generation():
     Drop and exit points are coordinates tuples.
     Structure is stored in the "matrix.npy" binary file
     """
-    with open('matrix.npy', 'rb') as file:
+    foldername = os.path.basename(os.getcwd())
+    if foldername != 'backend':
+        matrix_file = 'backend/matrix.npy'
+    else:
+        matrix_file = 'matrix.npy'
+    with open(matrix_file, 'rb') as file:
         labyrinth_matrix = np.load(file)
         drop_point = tuple(np.load(file))
         exit_point = tuple(np.load(file))
     return labyrinth_matrix, drop_point, exit_point
-
 
 def main():
     """ In case script is self executed, all imported values are shown
