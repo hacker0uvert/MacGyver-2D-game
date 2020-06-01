@@ -7,10 +7,11 @@
 # import pygame as pg
 
 import backend.labyrinth as lbth
-
+import frontend.texture as txtr
+import frontend.window as wdw
 
 def main():
-    """ ---> Docstring to be completed <---
+    """ TODO : Docstring to be completed
     """
     labyrinth_matrix, drop_point, exit_point = lbth.grid_generation()
     print(labyrinth_matrix, drop_point, exit_point)
