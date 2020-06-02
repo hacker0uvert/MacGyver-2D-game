@@ -1,23 +1,24 @@
 #! /usr/bin/env python3
 # coding: utf-8
 
-""" Module generating and interacting with the 15 boxes grid labyrinth on which the game is played
+""" Generation and interactions with the 15 boxes grid labyrinth
+on which the game is played
 """
 import os
 
 import numpy as np
 
 def grid_generation():
-    """ Function used to generate the 15 boxes grid statically
+    """ Generates the 15 boxes grid statically
     Labyrinth's walls are symbolised with 'W', corridors with 'c'.
     Drop and exit points are coordinates tuples.
     Structure is stored in the "matrix.npy" binary file
     """
+    # TODO : replace npy file by a reference to an external file container
     foldername = os.path.basename(os.getcwd())
+    matrix_file = 'matrix.npy'
     if foldername != 'backend':
-        matrix_file = 'backend/matrix.npy'
-    else:
-        matrix_file = 'matrix.npy'
+        matrix_file = str('backend/'+matrix_file)
     with open(matrix_file, 'rb') as file:
         labyrinth_matrix = np.load(file)
         drop_point = tuple(np.load(file))
