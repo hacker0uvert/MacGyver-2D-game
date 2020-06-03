@@ -11,7 +11,7 @@ import frontend.window as wdw
 def main():
     """ TODO : Docstring to be completed
     """
-    labyrinth_matrix, drop_point, exit_point = lbth.grid_generation()
+    labyrinth_matrix, drop_point, exit_point = lbth.grid_generation('backend')
     wdw.load()
 
 if __name__ == '__main__':
