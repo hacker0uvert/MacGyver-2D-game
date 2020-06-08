@@ -20,7 +20,7 @@ def crop_surface(texture_surface, coordinates):
     """
     x_length = coordinates[2] - coordinates[0]
     y_length = coordinates[3] - coordinates[1]
-    # pylint doesn't understand pg.Surface call so returns an arguments error
+    # pylint doesn't understand pg.Surface call thus returns an arguments error
     # pylint: disable-msg=too-many-function-args
     cropped_texture_surface = pg.Surface((x_length, y_length))
     # pylint: enable-msg=too-many-function-args

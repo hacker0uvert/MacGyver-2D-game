@@ -4,23 +4,20 @@
 """ Generation and interactions with the 15 boxes grid labyrinth
 on which the game is played
 """
+import json
 import os
 
-import numpy as np
-
-def grid_generation(directory='.', matrix_file='matrix.npy'):
+def grid_generation(directory='.', matrix_file='matrix.json'):
     """ Generates the 15 boxes grid statically
     Labyrinth's walls are symbolised with 'W', corridors with 'c'.
     Drop and exit points are coordinates tuples.
-    Structure is stored in the "matrix.npy" binary file
+    Structure is stored in the "matrix.json" file
     """
-    # TODO : replace matrix_file by a reference to an external file container
-    # TODO : replace matrix.npy by a text file
-    # file is to be read line by line so as to convert it to a table
-    with open(os.path.join(directory, matrix_file), 'rb') as file:
-        labyrinth_matrix = np.load(file)
-        drop_point = tuple(np.load(file))
-        exit_point = tuple(np.load(file))
+    with open(os.path.join(directory, matrix_file), 'r') as file:
+        matrix_json = json.load(file)
+    labyrinth_matrix = matrix_json['labyrinth_matrix']
+    drop_point = tuple(matrix_json['drop_point'])
+    exit_point = tuple(matrix_json['exit_point'])
     return labyrinth_matrix, drop_point, exit_point
 
 def main():
