@@ -12,7 +12,7 @@ def main():
     """ TODO : Docstring to be completed
     """
     labyrinth_matrix, drop_point, exit_point = lbth.grid_generation('backend')
-    wdw.load()
+    wdw.load(directory='frontend/resources')
 
 if __name__ == '__main__':
     main()

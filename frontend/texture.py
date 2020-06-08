@@ -36,7 +36,7 @@ def main():
     wall_texture_coordinates = (0, 240, 19, 259)
     floor_texture_file = 'structures.png'
     wall_texture_file = 'floor-tiles-20x20.png'
-    window_resolution = (640, 480)
+    window_resolution = (675, 675)
     pg.display.init()
     window = pg.display.set_mode(window_resolution)
     wall_texture = surface_load(directory, wall_texture_file)

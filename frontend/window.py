@@ -8,13 +8,13 @@ import os
 
 import pygame as pg
 
-def load(window_resolution=(640, 480)):
+def load(directory='resources', icon_file='MacGyver.png', window_resolution=(675, 675)):
     """ Window loading function
     """
     pg.display.init()
     pg.display.set_mode(window_resolution)
     pg.display.set_caption('MacGyver-2D')
-    icon()
+    icon(directory, icon_file)
 
 def icon(directory='resources', icon_file='MacGyver.png'):
     """ Window icon's loading function

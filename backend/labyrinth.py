@@ -27,9 +27,9 @@ def main():
     print("Imported values verification:")
     print(f"- game matrix: \n {labyrinth_matrix}")
     print("- drop point coordinates:")
-    print(f"{drop_point}, on a: \'{labyrinth_matrix[drop_point]}\' value")
+    print(f"{drop_point}, on a: \'{labyrinth_matrix[drop_point[0]][drop_point[1]]}\' value")
     print("- exit point coordinates:")
-    print(f"{exit_point}, on a: \'{labyrinth_matrix[exit_point]}\' value")
+    print(f"{exit_point}, on a: \'{labyrinth_matrix[drop_point[0]][drop_point[1]]}\' value")
 
 if __name__ == '__main__':
     main()
