@@ -8,7 +8,7 @@ import os
 
 import pygame as pg
 
-def load(directory='resources', icon_file='MacGyver.png', window_resolution=(675, 675)):
+def load(directory='resources', icon_file='MacGyver.png', window_resolution=(600, 600)):
     """ Window loading function
     """
     pg.display.init()
