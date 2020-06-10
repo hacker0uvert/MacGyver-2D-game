@@ -4,6 +4,7 @@
 """ Generation and interactions with the 15 boxes grid labyrinth
 on which the game is played
 """
+
 import json
 import os
 

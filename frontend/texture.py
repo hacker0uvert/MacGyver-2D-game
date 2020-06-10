@@ -4,8 +4,8 @@
 """ Textures manipulation module
 """
 
-import os
 import json
+import os
 
 import pygame as pg
 
@@ -65,11 +65,11 @@ def main():
     # pylint: disable-msg=import-outside-toplevel
     import window as wdw
     # pylint: enable-msg=import-outside-toplevel
-    window = wdw.load()
+    display = wdw.load()
     surfaces = surfaces_dict()
     i = 0
     while i < len(surfaces):
-        window.blit(surfaces[list(surfaces.keys())[i]], (i*40, 0))
+        display.blit(surfaces[list(surfaces.keys())[i]], (i*40, 0))
         i += 1
     pg.display.flip()
 
