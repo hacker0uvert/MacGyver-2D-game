@@ -5,6 +5,7 @@
 """
 
 import os
+import json
 
 import pygame as pg
 
@@ -39,24 +40,37 @@ def get_surface(directory, img_file, coordinates):
     cropped_texture_surface = crop_surface(texture_surface, coordinates)
     return cropped_texture_surface
 
+def load_surfaces_json(directory='.', surfaces_file='surfaces.json'):
+    """ Surfaces dictionnary loading function, from json file
+    """
+    with open(os.path.join(directory, surfaces_file), 'r') as file:
+        surfaces_json = json.load(file)
+    return surfaces_json
+
+def surfaces_dict(surface_json_directory='.', resources_directory='resources'):
+    """ Surfaces dictionnary definition function.
+    Values are defined from surfaces_json dict.
+    """
+    surfaces_json = load_surfaces_json(surface_json_directory)
+    surfaces = {}
+    for i in surfaces_json:
+        surface = get_surface(resources_directory, surfaces_json[i][0], surfaces_json[i][1])
+        surfaces[i] = surface
+    return surfaces
+
 def main():
     """ Surfaces are printed on script self load for test purposes
     """
-    # TODO : replace variables by a reference to an external file container
-    directory = 'resources'
-    floor_texture_coordinates = (300, 20, 339, 59)
-    wall_texture_coordinates = (0, 240, 19, 259)
-    floor_texture_file = 'structures.png'
-    wall_texture_file = 'floor-tiles-20x20.png'
-    window_resolution = (600, 600)
-    pg.display.init()
-    window = pg.display.set_mode(window_resolution)
-    wall_texture = surface_load(directory, wall_texture_file)
-    cropped_wall_texture = crop_surface(wall_texture, wall_texture_coordinates)
-    floor_texture = surface_load(directory, floor_texture_file)
-    cropped_floor_texture = crop_surface(floor_texture, floor_texture_coordinates)
-    window.blit(cropped_wall_texture, (0, 0))
-    window.blit(cropped_floor_texture, (45, 0))
+    # disabling pylint message, as window module is only needed for tests
+    # pylint: disable-msg=import-outside-toplevel
+    import window as wdw
+    # pylint: enable-msg=import-outside-toplevel
+    window = wdw.load()
+    surfaces = surfaces_dict()
+    i = 0
+    while i < len(surfaces):
+        window.blit(surfaces[list(surfaces.keys())[i]], (i*40, 0))
+        i += 1
     pg.display.flip()
 
 if __name__ == '__main__':

@@ -12,9 +12,10 @@ def load(directory='resources', icon_file='MacGyver.png', window_resolution=(600
     """ Window loading function
     """
     pg.display.init()
-    pg.display.set_mode(window_resolution)
+    window = pg.display.set_mode(window_resolution)
     pg.display.set_caption('MacGyver-2D')
     icon(directory, icon_file)
+    return window
 
 def icon(directory='resources', icon_file='MacGyver.png'):
     """ Window icon's loading function
