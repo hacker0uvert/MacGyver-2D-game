@@ -9,10 +9,15 @@ import os
 
 import pygame as pg
 
-def surface_load(directory, img_file):
+SCRIPT_DIR = os.path.split(os.path.abspath(__file__))[0]
+SURFACES_JSON_DIR = SCRIPT_DIR
+RESOURCES_DIR = os.path.join(SCRIPT_DIR, 'resources')
+SURFACES_FILE = 'surfaces.json'
+
+def surface_load(script_dir, img_file):
     """ Texture surface image loading function
     """
-    with open(os.path.join(directory, img_file), 'r') as file:
+    with open(os.path.join(script_dir, img_file), 'r') as file:
         texture_surface = pg.image.load(file).convert()
     return texture_surface
 
@@ -33,28 +38,28 @@ def crop_surface(texture_surface, coordinates):
     cropped_texture_surface = pg.transform.scale(cropped_texture_surface, (40, 40))
     return cropped_texture_surface
 
-def get_surface(directory, img_file, coordinates):
+def get_surface(script_dir, img_file, coordinates):
     """ Texture surface image file load and crop
     """
-    texture_surface = surface_load(directory, img_file)
+    texture_surface = surface_load(script_dir, img_file)
     cropped_texture_surface = crop_surface(texture_surface, coordinates)
     return cropped_texture_surface
 
-def load_surfaces_json(directory='.', surfaces_file='surfaces.json'):
+def load_surfaces_json(surfaces_json_dir, surfaces_file):
     """ Surfaces dictionnary loading function, from json file
     """
-    with open(os.path.join(directory, surfaces_file), 'r') as file:
+    with open(os.path.join(surfaces_json_dir, surfaces_file), 'r') as file:
         surfaces_json = json.load(file)
     return surfaces_json
 
-def surfaces_dict(surface_json_directory='.', resources_directory='resources'):
+def surfaces_dict(surfaces_json_dir, resources_dir, surfaces_file):
     """ Surfaces dictionnary definition function.
     Values are defined from surfaces_json dict.
     """
-    surfaces_json = load_surfaces_json(surface_json_directory)
+    surfaces_json = load_surfaces_json(surfaces_json_dir, surfaces_file)
     surfaces = {}
     for i in surfaces_json:
-        surface = get_surface(resources_directory, surfaces_json[i][0], surfaces_json[i][1])
+        surface = get_surface(resources_dir, surfaces_json[i][0], surfaces_json[i][1])
         surfaces[i] = surface
     return surfaces
 
@@ -65,8 +70,8 @@ def main():
     # pylint: disable-msg=import-outside-toplevel
     import window as wdw
     # pylint: enable-msg=import-outside-toplevel
-    display = wdw.load()
-    surfaces = surfaces_dict()
+    display = wdw.load(wdw.RESOURCES_DIR, wdw.ICON_FILE)
+    surfaces = surfaces_dict(SURFACES_JSON_DIR, RESOURCES_DIR, SURFACES_FILE)
     i = 0
     while i < len(surfaces):
         display.blit(surfaces[list(surfaces.keys())[i]], (i*40, 0))
