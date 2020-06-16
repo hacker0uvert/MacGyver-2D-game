@@ -4,8 +4,8 @@
 """ MacGyver game : you're gonna have to help him escape!
 """
 
-import settings as stg
 import labyrinth as lbth
+import settings as stg
 import texture as txtr
 import window as wdw
 

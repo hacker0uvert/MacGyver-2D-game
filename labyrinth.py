@@ -8,8 +8,6 @@ on which the game is played
 import json
 import os
 
-import settings as stg
-
 def grid_gen(script_dir, matrix_file):
     """ Generates the 15 boxes grid statically
     Labyrinth's walls are symbolised with 'W', corridors with 'c'.
@@ -26,6 +24,9 @@ def grid_gen(script_dir, matrix_file):
 def main():
     """ In case script is self executed, all imported values are shown
     """
+    # pylint: disable-msg=import-outside-toplevel
+    import settings as stg
+    # pylint: enable-msg=import-outside-toplevel
     labyrinth_matrix, drop_point, exit_point = grid_gen(stg.SCRIPT_DIR, stg.MATRIX_FILE)
     print("Imported values verification:")
     print(f"- game matrix: \n {labyrinth_matrix}")

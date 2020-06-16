@@ -8,8 +8,6 @@ import os
 
 import pygame as pg
 
-import settings as stg
-
 def load(resources_dir, icon_file, window_resolution=(600, 600)):
     """ Window loading function
     """
@@ -45,6 +43,9 @@ def background_init(labyrinth_matrix, display, surfaces):
 def main():
     """ Function used to call script's possibilities
     """
+        # pylint: disable-msg=import-outside-toplevel
+    import settings as stg
+    # pylint: enable-msg=import-outside-toplevel
     load(stg.RESOURCES_DIR, stg.ICON_FILE)
 
 if __name__ == '__main__':

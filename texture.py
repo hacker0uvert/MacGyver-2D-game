@@ -9,8 +9,6 @@ import os
 
 import pygame as pg
 
-import settings as stg
-
 def surface_load(script_dir, img_file):
     """ Texture surface image loading function
     """
@@ -66,6 +64,7 @@ def main():
     # disabling pylint message, as window module is only needed for tests
     # pylint: disable-msg=import-outside-toplevel
     import window as wdw
+    import settings as stg
     # pylint: enable-msg=import-outside-toplevel
     display = wdw.load(stg.RESOURCES_DIR, stg.ICON_FILE)
     surfaces = surfaces_dict(stg.SURFACES_JSON_DIR, stg.RESOURCES_DIR, stg.SURFACES_FILE)
