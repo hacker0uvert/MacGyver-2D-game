@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
 """ Generation and interactions with the 15 boxes grid labyrinth
 on which the game is played
@@ -8,8 +8,7 @@ on which the game is played
 import json
 import os
 
-SCRIPT_DIR = os.path.split(os.path.abspath(__file__))[0]
-MATRIX_FILE = 'matrix.json'
+import settings as stg
 
 def grid_gen(script_dir, matrix_file):
     """ Generates the 15 boxes grid statically
@@ -27,7 +26,7 @@ def grid_gen(script_dir, matrix_file):
 def main():
     """ In case script is self executed, all imported values are shown
     """
-    labyrinth_matrix, drop_point, exit_point = grid_gen(SCRIPT_DIR, MATRIX_FILE)
+    labyrinth_matrix, drop_point, exit_point = grid_gen(stg.SCRIPT_DIR, stg.MATRIX_FILE)
     print("Imported values verification:")
     print(f"- game matrix: \n {labyrinth_matrix}")
     print("- drop point coordinates:")

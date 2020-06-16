@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
 """ Window management and decoration module
 """
@@ -8,9 +8,7 @@ import os
 
 import pygame as pg
 
-SCRIPT_DIR = os.path.split(os.path.abspath(__file__))[0]
-RESOURCES_DIR = os.path.join(SCRIPT_DIR, 'resources')
-ICON_FILE = 'MacGyver.png'
+import settings as stg
 
 def load(resources_dir, icon_file, window_resolution=(600, 600)):
     """ Window loading function
@@ -31,23 +29,23 @@ def icon(resources_dir, icon_file):
 def background_init(labyrinth_matrix, display, surfaces):
     """ Walls and corridors background textures in pygame window initialisation
     """
-    i, j = 0, 0
-    while j in range(15):
-        while i in range(15):
-            if labyrinth_matrix[j][i] == 'W':
-                display.blit(surfaces['wall'], (i*40, j*40))
+    x_iterator, y_iterator = 0, 0
+    while y_iterator in range(15):
+        while x_iterator in range(15):
+            if labyrinth_matrix[y_iterator][x_iterator] == 'W':
+                display.blit(surfaces['wall'], (x_iterator*40, y_iterator*40))
             else:
-                display.blit(surfaces['corridor'], (i*40, j*40))
-            i += 1
-        j += 1
-        i = 0
+                display.blit(surfaces['corridor'], (x_iterator*40, y_iterator*40))
+            x_iterator += 1
+        y_iterator += 1
+        x_iterator = 0
     pg.display.flip()
     return display
 
 def main():
     """ Function used to call script's possibilities
     """
-    load(RESOURCES_DIR, ICON_FILE)
+    load(stg.RESOURCES_DIR, stg.ICON_FILE)
 
 if __name__ == '__main__':
     main()

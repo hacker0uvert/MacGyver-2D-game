@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-# coding: utf-8
+# -*- coding: utf-8 -*-
 
 """ Textures manipulation module
 """
@@ -9,10 +9,7 @@ import os
 
 import pygame as pg
 
-SCRIPT_DIR = os.path.split(os.path.abspath(__file__))[0]
-SURFACES_JSON_DIR = SCRIPT_DIR
-RESOURCES_DIR = os.path.join(SCRIPT_DIR, 'resources')
-SURFACES_FILE = 'surfaces.json'
+import settings as stg
 
 def surface_load(script_dir, img_file):
     """ Texture surface image loading function
@@ -70,8 +67,8 @@ def main():
     # pylint: disable-msg=import-outside-toplevel
     import window as wdw
     # pylint: enable-msg=import-outside-toplevel
-    display = wdw.load(wdw.RESOURCES_DIR, wdw.ICON_FILE)
-    surfaces = surfaces_dict(SURFACES_JSON_DIR, RESOURCES_DIR, SURFACES_FILE)
+    display = wdw.load(stg.RESOURCES_DIR, stg.ICON_FILE)
+    surfaces = surfaces_dict(stg.SURFACES_JSON_DIR, stg.RESOURCES_DIR, stg.SURFACES_FILE)
     i = 0
     while i < len(surfaces):
         display.blit(surfaces[list(surfaces.keys())[i]], (i*40, 0))
