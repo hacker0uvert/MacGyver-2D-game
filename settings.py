@@ -4,6 +4,7 @@
 """ Module used to store game settings
 """
 
+import json
 import os
 
 # directories
@@ -19,3 +20,8 @@ ICON_FILE = 'MacGyver.png'
 # parameters
 WINDOW_RESOLUTION = (600, 600)
 WINDOW_CAPTION = 'MacGyver-2D'
+
+def json_load(directory, json_file):
+    with open(os.path.join(directory, json_file), 'r') as file:
+            json_content = json.load(file)
+    return json_content

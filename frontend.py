@@ -4,15 +4,15 @@
 """ Frontend window management and textures manipulation module
 """
 
-import json
 import os
 
 import pygame as pg
 
+import backend as bckd
 import settings as stg
 
 RESOURCES_DIR = stg.RESOURCES_DIR
-SCRIPT_DIR = stg.SCRIPT_DIR
+LABYRINTH = bckd.Labyrinth()
 
 class Window:
     """ Physical window management
@@ -21,14 +21,10 @@ class Window:
     def __init__(self):
         """ Window class initiator
         """
-        import backend as bckd
         self.resources_dir = RESOURCES_DIR
         self.icon_file = stg.ICON_FILE
         self.window_resolution = stg.WINDOW_RESOLUTION
         self.window_caption = stg.WINDOW_CAPTION
-        self.script_dir = SCRIPT_DIR
-        self.matrix_file = stg.MATRIX_FILE
-        self.labyrinth_matrix, self.drop_point, self.exit_point = bckd.grid_gen(self.script_dir, self.matrix_file)
 
     def load(self):
         """ Window loading function
@@ -51,12 +47,12 @@ class Window:
         'c' stands for 'corridor'
         """
         x_iterator, y_iterator = 0, 0
-        while y_iterator in range(15):
-            while x_iterator in range(15):
-                if self.labyrinth_matrix[y_iterator][x_iterator] == 'W':
-                    self.screen.blit(surfaces['wall'], (x_iterator*40, y_iterator*40))
+        while y_iterator in range(LABYRINTH.grid_len):
+            while x_iterator in range(LABYRINTH.grid_len):
+                if LABYRINTH.labyrinth_matrix[y_iterator][x_iterator] == 'W':
+                    self.screen.blit(surfaces['wall'], (x_iterator*LABYRINTH.box_px_len, y_iterator*LABYRINTH.box_px_len))
                 else:
-                    self.screen.blit(surfaces['corridor'], (x_iterator*40, y_iterator*40))
+                    self.screen.blit(surfaces['corridor'], (x_iterator*LABYRINTH.box_px_len, y_iterator*LABYRINTH.box_px_len))
                 x_iterator += 1
             y_iterator += 1
             x_iterator = 0
@@ -71,10 +67,11 @@ class Texture:
         """ Class initiator
         """
         self.surfaces = {}
-        self.script_dir = SCRIPT_DIR
+        self.script_dir = stg.SCRIPT_DIR
         self.surfaces_json_dir = stg.SURFACES_JSON_DIR
         self.surfaces_file = stg.SURFACES_FILE
         self.resources_dir = RESOURCES_DIR
+        self.surfaces_json = self.surfaces_dict()
 
     def surface_load(self, img_file):
         """ Texture surface image loading function
@@ -95,14 +92,15 @@ class Texture:
         # pylint: enable-msg=too-many-function-args
         # adding the cropped texture to the newly created Surface
         cropped_texture_surface.blit(texture_surface, (0, 0), coordinates)
+        # for a window's definition of 600*600 and a 15*15 matrix:
         # converting the Surface to a 40*40 pixels rectangle, so as to correspond
         # to window's 600*600 pixels definition: 15*15 texture rectangles matrix
-        cropped_texture_surface = pg.transform.scale(cropped_texture_surface, (40, 40))
+        cropped_texture_surface = pg.transform.scale(cropped_texture_surface, (LABYRINTH.box_px_len, LABYRINTH.box_px_len))
         return cropped_texture_surface
 
     def get_surface(self, img_file, coordinates):
         """ Texture surface image file load and crop
-        """ 
+        """
         texture_surface = self.surface_load(img_file)
         cropped_texture_surface = self.crop_surface(texture_surface, coordinates)
         return cropped_texture_surface
@@ -110,18 +108,18 @@ class Texture:
     def load_surfaces_json(self):
         """ Surfaces dictionnary loading function, from json file
         """
-        with open(os.path.join(self.surfaces_json_dir, self.surfaces_file), 'r') as file:
-            surfaces_json = json.load(file)
+        surfaces_json = stg.json_load(self.surfaces_json_dir, self.surfaces_file)
         return surfaces_json
 
     def surfaces_dict(self):
         """ Surfaces dictionnary definition function.
         Values are defined from surfaces_json dict.
         """
-        self.surfaces_json = self.load_surfaces_json()
-        for i in self.surfaces_json:
-            surface = self.get_surface(self.surfaces_json[i][0], self.surfaces_json[i][1])
+        surfaces_json = self.load_surfaces_json()
+        for i in surfaces_json:
+            surface = self.get_surface(surfaces_json[i][0], surfaces_json[i][1])
             self.surfaces[i] = surface
+        return surfaces_json
 
 def main():
     """ Window is loaded on script execution.
@@ -130,10 +128,9 @@ def main():
     display = Window()
     display.load()
     surfaces = Texture()
-    surfaces.surfaces_dict()
     i = 0
     while i < len(surfaces.surfaces):
-        display.screen.blit(surfaces.surfaces[list(surfaces.surfaces.keys())[i]], (i*40, 0))
+        display.screen.blit(surfaces.surfaces[list(surfaces.surfaces.keys())[i]], (i*LABYRINTH.box_px_len, 0))
         i += 1
     pg.display.flip()
 
