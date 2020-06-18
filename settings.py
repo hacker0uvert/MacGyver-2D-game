@@ -22,6 +22,8 @@ WINDOW_RESOLUTION = (600, 600)
 WINDOW_CAPTION = 'MacGyver-2D'
 
 def json_load(directory, json_file):
+    """ Json file loading function
+    """
     with open(os.path.join(directory, json_file), 'r') as file:
-            json_content = json.load(file)
+        json_content = json.load(file)
     return json_content
