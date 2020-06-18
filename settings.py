@@ -15,3 +15,7 @@ RESOURCES_DIR = os.path.join(SCRIPT_DIR, 'resources')
 MATRIX_FILE = 'matrix.json'
 SURFACES_FILE = 'surfaces.json'
 ICON_FILE = 'MacGyver.png'
+
+# parameters
+WINDOW_RESOLUTION = (600, 600)
+WINDOW_CAPTION = 'MacGyver-2D'
