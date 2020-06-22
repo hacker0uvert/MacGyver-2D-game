@@ -136,9 +136,11 @@ class MovingObject(pg.sprite.Sprite):
         SPRITES.add(self)
 
     def pick(self):
-        """ Method used to specify that an object was picked by MacGyver while moving on the grid
+        """ Method used to specify that an object was picked by MacGyver while moving on the grid.
+        Object is deleted from SPRITES group.
         """
         self.picked = True
+        SPRITES.remove(self)
 
 
 def surfaces_dict():

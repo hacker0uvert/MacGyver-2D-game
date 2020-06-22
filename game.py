@@ -22,13 +22,18 @@ def main():
         clock.tick(frtd.stg.FPS)
         # quit event definition
         for event in frtd.pg.event.get():
+# pylint doesn't recognize pygame's quit member
+# pylint: disable-msg=no-member
             if event.type == frtd.pg.QUIT:
+# pylint: enable-msg=no-member
                 on_air = False
         frtd.pg.display.update()
         frtd.SPRITES.draw(display.screen)
         frtd.pg.display.update()
 
+# pylint: disable-msg=no-member
 frtd.pg.quit()
+# pylint: enable-msg=no-member
 
 
 if __name__ == '__main__':
