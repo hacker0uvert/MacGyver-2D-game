@@ -13,6 +13,8 @@ import settings as stg
 
 RESOURCES_DIR = stg.RESOURCES_DIR
 LABYRINTH = bckd.Labyrinth()
+CLOCK = pg.time.Clock()
+SPRITES = pg.sprite.Group()
 
 class Window:
     """ Physical window management
@@ -68,7 +70,6 @@ class Texture:
         """
         self.surfaces = {}
         self.script_dir = stg.SCRIPT_DIR
-        self.surfaces_json_dir = stg.SURFACES_JSON_DIR
         self.surfaces_file = stg.SURFACES_FILE
         self.resources_dir = RESOURCES_DIR
         self.surfaces_json = self.surfaces_dict()
@@ -106,13 +107,13 @@ class Texture:
         return cropped_texture_surface
 
     def load_surfaces_json(self):
-        """ Surfaces dictionnary loading function, from json file
+        """ Surfaces dictionary loading function, from json file
         """
-        surfaces_json = stg.json_load(self.surfaces_json_dir, self.surfaces_file)
+        surfaces_json = stg.json_load(self.script_dir, self.surfaces_file)
         return surfaces_json
 
     def surfaces_dict(self):
-        """ Surfaces dictionnary definition function.
+        """ Surfaces dictionary definition function.
         Values are defined from surfaces_json dict.
         """
         surfaces_json = self.load_surfaces_json()
@@ -121,9 +122,41 @@ class Texture:
             self.surfaces[i] = surface
         return surfaces_json
 
+
+class MovingObject(pg.sprite.Sprite):
+    """ Sprites (characters and objects) management
+    """
+
+    def __init__(self, surface):
+        """ Class initiator
+        """
+        pg.sprite.Sprite.__init__(self)
+        # value used to define if object has been collected by MacGyver
+        self.picked = False
+        self.create(surface)
+
+    def create(self, surface):
+        """ Sprite creation method: image is loaded from existing surface.
+        Rect is then initiated, it's center is defined.
+        Sprite is finally added to the SPRITES group, used to update all of them at once.
+        """
+        self.image = surface
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.image[0] / 2, self.image[1] / 2)
+        SPRITES.add(self)
+
+    #def pick(self):
+
+def load_sprites():
+    """ MacGyver, Guardian, and syringe elements sprites load function
+    """
+    surfaces_list = Texture.surfaces_dict()
+    for sprite in stg.SPRITES_LIST:
+        Texture.create(surfaces_list[sprite])
+
 def main():
     """ Window is loaded on script execution.
-    Surfaces are then printed on script for test purposes
+    Every surface is then individually printed for test purposes.
     """
     display = Window()
     display.load()

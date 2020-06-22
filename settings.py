@@ -9,7 +9,6 @@ import os
 
 # directories
 SCRIPT_DIR = os.path.split(os.path.abspath(__file__))[0]
-SURFACES_JSON_DIR = SCRIPT_DIR
 RESOURCES_DIR = os.path.join(SCRIPT_DIR, 'resources')
 
 # files
@@ -20,6 +19,8 @@ ICON_FILE = 'MacGyver.png'
 # parameters
 WINDOW_RESOLUTION = (600, 600)
 WINDOW_CAPTION = 'MacGyver-2D'
+FPS = 25
+SPRITES_LIST = ['macgyver', 'guardian', 'needle', 'plastube', 'ether']
 
 def json_load(directory, json_file):
     """ Json file loading function
