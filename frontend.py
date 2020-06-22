@@ -68,11 +68,11 @@ class Texture:
     def __init__(self):
         """ Class initiator
         """
-        self.surfaces = {}
+        # self.surfaces = {}
         self.script_dir = stg.SCRIPT_DIR
         self.surfaces_file = stg.SURFACES_FILE
         self.resources_dir = RESOURCES_DIR
-        self.surfaces_json = self.surfaces_dict()
+        # self.surfaces_json = self.surfaces_dict()
 
     def surface_load(self, img_file):
         """ Texture surface image loading function
@@ -112,16 +112,6 @@ class Texture:
         surfaces_json = stg.json_load(self.script_dir, self.surfaces_file)
         return surfaces_json
 
-    def surfaces_dict(self):
-        """ Surfaces dictionary definition function.
-        Values are defined from surfaces_json dict.
-        """
-        surfaces_json = self.load_surfaces_json()
-        for i in surfaces_json:
-            surface = self.get_surface(surfaces_json[i][0], surfaces_json[i][1])
-            self.surfaces[i] = surface
-        return surfaces_json
-
 
 class MovingObject(pg.sprite.Sprite):
     """ Sprites (characters and objects) management
@@ -146,6 +136,18 @@ class MovingObject(pg.sprite.Sprite):
         SPRITES.add(self)
 
     #def pick(self):
+
+def surfaces_dict():
+    """ Surfaces dictionary definition function.
+    Values are defined from surfaces_json dict.
+    """
+    surfaces = {}
+    textures = Texture()
+    surfaces_json = textures.load_surfaces_json()
+    for i in surfaces_json:
+        surface = textures.get_surface(surfaces_json[i][0], surfaces_json[i][1])
+        surfaces[i] = surface
+    return surfaces_json, surfaces
 
 def load_sprites():
     """ MacGyver, Guardian, and syringe elements sprites load function
