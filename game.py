@@ -11,7 +11,7 @@ def main():
     """
     display = frtd.Window()
     display.load()
-    surfaces_json, surfaces = frtd.surfaces_dict()
+    surfaces = frtd.surfaces_dict()
     display.background_init(surfaces)
 
 if __name__ == '__main__':

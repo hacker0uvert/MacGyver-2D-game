@@ -68,11 +68,9 @@ class Texture:
     def __init__(self):
         """ Class initiator
         """
-        # self.surfaces = {}
         self.script_dir = stg.SCRIPT_DIR
         self.surfaces_file = stg.SURFACES_FILE
         self.resources_dir = RESOURCES_DIR
-        # self.surfaces_json = self.surfaces_dict()
 
     def surface_load(self, img_file):
         """ Texture surface image loading function
@@ -123,19 +121,25 @@ class MovingObject(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         # value used to define if object has been collected by MacGyver
         self.picked = False
-        self.create(surface)
-
-    def create(self, surface):
-        """ Sprite creation method: image is loaded from existing surface.
-        Rect is then initiated, it's center is defined.
-        Sprite is finally added to the SPRITES group, used to update all of them at once.
-        """
         self.image = surface
+        self.rect_def()
+        self.add_to_sprites()
+
+    def rect_def(self):
+        """ MovingObject rectangle definition, from image surface
+        """
         self.rect = self.image.get_rect()
-        self.rect.center = (self.image[0] / 2, self.image[1] / 2)
+
+    def add_to_sprites(self):
+        """ MovingObject addition to the all_SPRITES group
+        """
         SPRITES.add(self)
 
-    #def pick(self):
+    def pick(self):
+        """ Method used to specify that an object was picked by MacGyver while moving on the grid
+        """
+        self.picked = True
+
 
 def surfaces_dict():
     """ Surfaces dictionary definition function.
@@ -147,14 +151,7 @@ def surfaces_dict():
     for i in surfaces_json:
         surface = textures.get_surface(surfaces_json[i][0], surfaces_json[i][1])
         surfaces[i] = surface
-    return surfaces_json, surfaces
-
-def load_sprites():
-    """ MacGyver, Guardian, and syringe elements sprites load function
-    """
-    surfaces_list = Texture.surfaces_dict()
-    for sprite in stg.SPRITES_LIST:
-        Texture.create(surfaces_list[sprite])
+    return surfaces
 
 def main():
     """ Window is loaded on script execution.
@@ -162,10 +159,10 @@ def main():
     """
     display = Window()
     display.load()
-    surfaces = Texture()
+    surfaces = surfaces_dict()
     i = 0
-    while i < len(surfaces.surfaces):
-        display.screen.blit(surfaces.surfaces[list(surfaces.surfaces.keys())[i]], (i*LABYRINTH.box_px_len, 0))
+    while i < len(surfaces):
+        display.screen.blit(surfaces[list(surfaces.keys())[i]], (i*LABYRINTH.box_px_len, 0))
         i += 1
     pg.display.flip()
 
