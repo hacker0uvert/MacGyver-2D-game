@@ -115,15 +115,16 @@ class MovingObject(pg.sprite.Sprite):
     """ Sprites (characters and objects) management
     """
 
-    def __init__(self, surface):
+    def __init__(self, surface, visible):
         """ Class initiator
         """
         pg.sprite.Sprite.__init__(self)
         # value used to define if object has been collected by MacGyver
-        self.picked = False
+        self.visible = visible
         self.image = surface
         self.rect_def()
-        self.add_to_sprites()
+        if self.visible:
+            self.add_to_sprites()
 
     def rect_def(self):
         """ MovingObject rectangle definition, from image surface
@@ -139,7 +140,7 @@ class MovingObject(pg.sprite.Sprite):
         """ Method used to specify that an object was picked by MacGyver while moving on the grid.
         Object is deleted from SPRITES group.
         """
-        self.picked = True
+        self.visible = False
         SPRITES.remove(self)
 
 
@@ -154,6 +155,16 @@ def surfaces_dict():
         surface = textures.get_surface(surfaces_json[i][0], surfaces_json[i][1])
         surfaces[i] = surface
     return surfaces
+
+def sprites_gen(surfaces):
+    """ Sprites generation and conversion into MovingObject function
+    """
+    sprites = {}
+    for name, visibility in stg.SPRITES_LIST:
+        surface = surfaces[name]
+        sprite = MovingObject(surface, visibility)
+        sprites[name] = sprite
+    return sprites
 
 def main():
     """ Window is loaded on script execution.

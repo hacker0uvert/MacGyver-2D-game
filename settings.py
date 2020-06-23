@@ -20,7 +20,7 @@ ICON_FILE = 'MacGyver.png'
 WINDOW_RESOLUTION = (600, 600)
 WINDOW_CAPTION = 'MacGyver-2D'
 FPS = 25
-SPRITES_LIST = ['macgyver', 'guardian', 'needle', 'plastube', 'ether']
+SPRITES_LIST = [('macgyver', True), ('guardian', True), ('needle', True), ('plastube', True), ('ether', True), ('dead', False), ('rip', False)]
 
 def json_load(directory, json_file):
     """ Json file loading function
