@@ -12,10 +12,12 @@ def main():
     display = frtd.Window()
     display.load()
     surfaces = frtd.surfaces_dict()
-    display.background_init(surfaces)
     clock = frtd.CLOCK
+    display.background_init(surfaces)
+    background = display.screen.copy()
+    sprites = frtd.sprites_gen(surfaces)
 
-    # game time
+    # game time!
     on_air = True
     while on_air:
         # Frames Per Second definition
@@ -27,7 +29,7 @@ def main():
             if event.type == frtd.pg.QUIT:
 # pylint: enable-msg=no-member
                 on_air = False
-        frtd.pg.display.update()
+        display.screen.blit(background, (0, 0))
         frtd.SPRITES.draw(display.screen)
         frtd.pg.display.update()
 
