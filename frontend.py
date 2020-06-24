@@ -143,6 +143,11 @@ class MovingObject(pg.sprite.Sprite):
         self.visible = False
         SPRITES.remove(self)
 
+    def physical_move(self, x_move, y_move):
+        """ Movement from present physical position to x_move horizontal, y_move vertical new coordinates (negative move authorised)
+        """
+        self.rect.move_ip(x_move * LABYRINTH.box_px_len, y_move * LABYRINTH.box_px_len)
+
 
 def surfaces_dict():
     """ Surfaces dictionary definition function.
@@ -174,7 +179,7 @@ def main():
     display.load()
     surfaces = surfaces_dict()
     i = 0
-    while i < len(surfaces):
+    while i in range(len(surfaces)):
         display.screen.blit(surfaces[list(surfaces.keys())[i]], (i*LABYRINTH.box_px_len, 0))
         i += 1
     pg.display.flip()
