@@ -16,8 +16,6 @@ def main():
     display.background_init(surfaces)
     background = display.screen.copy()
     sprites = frtd.sprites_gen(surfaces)
-    sprites['macgyver'].physical_move(frtd.LABYRINTH.drop_point[0], frtd.LABYRINTH.drop_point[1])
-    sprites['guardian'].physical_move(frtd.LABYRINTH.exit_point[0], frtd.LABYRINTH.exit_point[1])
 
     # game time!
     on_air = True

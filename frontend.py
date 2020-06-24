@@ -4,7 +4,7 @@
 """ Frontend window management and textures manipulation module
 """
 
-import os
+import os, random
 
 import pygame as pg
 
@@ -115,7 +115,7 @@ class MovingObject(pg.sprite.Sprite):
     """ Sprites (characters and objects) management
     """
 
-    def __init__(self, surface, visible):
+    def __init__(self, name, surface, visible):
         """ Class initiator
         """
         pg.sprite.Sprite.__init__(self)
@@ -125,6 +125,12 @@ class MovingObject(pg.sprite.Sprite):
         self.rect_def()
         if self.visible:
             self.add_to_sprites()
+        if name == 'macgyver':
+            self.physical_move(LABYRINTH.drop_point[0], LABYRINTH.drop_point[1])
+        if name == 'guardian':
+            self.physical_move(LABYRINTH.exit_point[0], LABYRINTH.exit_point[1])
+        if name in ('ether', 'needle', 'plastube'):
+            self.random_coordinates()
 
     def rect_def(self):
         """ MovingObject rectangle definition, from image surface
@@ -148,6 +154,14 @@ class MovingObject(pg.sprite.Sprite):
         """
         self.rect.move_ip(x_move * LABYRINTH.box_px_len, y_move * LABYRINTH.box_px_len)
 
+    def random_coordinates(self):
+        """ Random coordinates generation, in labyrinth_matrix's coordinates range
+        """
+        x_coord, y_coord = 0, 0
+        while LABYRINTH.labyrinth_matrix[x_coord][y_coord] == 'W':
+            x_coord, y_coord = random.randint(0, LABYRINTH.grid_len - 1), random.randint(0, LABYRINTH.grid_len - 1)
+        self.physical_move(x_coord, y_coord)
+
 
 def surfaces_dict():
     """ Surfaces dictionary definition function.
@@ -167,7 +181,7 @@ def sprites_gen(surfaces):
     sprites = {}
     for name, visibility in stg.SPRITES_LIST:
         surface = surfaces[name]
-        sprite = MovingObject(surface, visibility)
+        sprite = MovingObject(name, surface, visibility)
         sprites[name] = sprite
     return sprites
 
