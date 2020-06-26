@@ -154,11 +154,12 @@ class MovingObject(pg.sprite.Sprite):
         SPRITES.remove(self)
 
     def physical_move(self, x_case_move, y_case_move):
-        """ Movement from present physical position to x_move horizontal, y_move vertical new coordinates (negative move authorised)
+        """ Movement from present physical position to x_case_move horizontal, y_case_move vertical new cases (negative move authorised).
+        x_move and y_move correspond to the same movement, converted into pixels, depending on the current display size and number of grid cases.
         """
         x_move = x_case_move * LABYRINTH.box_px_len
         y_move = y_case_move * LABYRINTH.box_px_len
-        self.rect.move_ip((self.rect.x + x_move), (self.rect.y + y_move))
+        self.rect.move_ip(x_move, y_move)
 
     def random_coordinates(self):
         """ Random coordinates generation, in labyrinth_matrix's coordinates range
