@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-""" Frontend window management and textures manipulation module
+""" Frontend window management and textures manipulation module.
+MovingObject is used to add functionnalities to the native Pygame Sprite class.
 """
 
 import os, random
@@ -76,7 +77,7 @@ class Texture:
         """ Texture surface image loading function
         """
         with open(os.path.join(self.resources_dir, img_file), 'r') as file:
-            texture_surface = pg.image.load(file).convert()
+            texture_surface = pg.image.load(file).convert_alpha()
         return texture_surface
 
     def crop_surface(self, texture_surface, coordinates):
@@ -116,7 +117,10 @@ class MovingObject(pg.sprite.Sprite):
     """
 
     def __init__(self, name, surface, visible):
-        """ Class initiator
+        """ Class initiator.
+        MacGyver and Guardian are respectively positionned on drop_point and exit_point.
+        Ether, needle and plastube sprites are randomly dropped in the corridors.
+        Above actions are applied to each element thanks to the name argument, which enables sprite recognition.
         """
         pg.sprite.Sprite.__init__(self)
         # value used to define if object has been collected by MacGyver
@@ -138,13 +142,13 @@ class MovingObject(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def add_to_sprites(self):
-        """ MovingObject addition to the all_SPRITES group
+        """ MovingObject addition to the all_SPRITES group, so as to be blitted on the screen.
         """
         SPRITES.add(self)
 
     def pick(self):
         """ Method used to specify that an object was picked by MacGyver while moving on the grid.
-        Object is deleted from SPRITES group.
+        Object is deleted from SPRITES group, as it doesn't mustn't be blitted on the screen anymore.
         """
         self.visible = False
         SPRITES.remove(self)
@@ -157,7 +161,7 @@ class MovingObject(pg.sprite.Sprite):
     def random_coordinates(self):
         """ Random coordinates generation, in labyrinth_matrix's coordinates range
         """
-        x_coord, y_coord = 0, 0
+        x_coord, y_coord = random.randint(0, LABYRINTH.grid_len - 1), random.randint(0, LABYRINTH.grid_len - 1)
         while LABYRINTH.labyrinth_matrix[x_coord][y_coord] == 'W':
             x_coord, y_coord = random.randint(0, LABYRINTH.grid_len - 1), random.randint(0, LABYRINTH.grid_len - 1)
         self.physical_move(x_coord, y_coord)
