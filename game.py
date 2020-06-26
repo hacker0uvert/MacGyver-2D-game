@@ -16,6 +16,7 @@ def main():
     display.background_init(surfaces)
     background = display.screen.copy()
     sprites = frtd.sprites_gen(surfaces)
+    macgyver = sprites['macgyver']
 
     # game time!
     on_air = True
@@ -29,6 +30,15 @@ def main():
             if event.type == frtd.pg.QUIT:
 # pylint: enable-msg=no-member
                 on_air = False
+            elif event.type == frtd.pg.KEYDOWN:
+                if event.key == frtd.pg.K_DOWN:
+                    macgyver.physical_move(0, 1)
+                elif event.key == frtd.pg.K_UP:
+                    macgyver.physical_move(0, -1)
+                elif event.key == frtd.pg.K_LEFT:
+                    macgyver.physical_move(-1, 0)
+                elif event.key == frtd.pg.K_RIGHT:
+                    macgyver.physical_move(1, 0)
         display.screen.blit(background, (0, 0))
         frtd.SPRITES.draw(display.screen)
         frtd.pg.display.update()
