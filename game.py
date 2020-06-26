@@ -31,13 +31,13 @@ def main():
 # pylint: enable-msg=no-member
                 on_air = False
             elif event.type == frtd.pg.KEYDOWN:
-                if event.key == frtd.pg.K_DOWN:
+                if event.key in (frtd.pg.K_DOWN, frtd.pg.K_KP2):
                     macgyver.physical_move(0, 1)
-                elif event.key == frtd.pg.K_UP:
+                elif event.key in (frtd.pg.K_UP, frtd.pg.K_KP8):
                     macgyver.physical_move(0, -1)
-                elif event.key == frtd.pg.K_LEFT:
+                elif event.key in (frtd.pg.K_LEFT, frtd.pg.K_KP4):
                     macgyver.physical_move(-1, 0)
-                elif event.key == frtd.pg.K_RIGHT:
+                elif event.key in (frtd.pg.K_RIGHT, frtd.pg.K_KP6):
                     macgyver.physical_move(1, 0)
         display.screen.blit(background, (0, 0))
         frtd.SPRITES.draw(display.screen)
