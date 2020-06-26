@@ -153,17 +153,20 @@ class MovingObject(pg.sprite.Sprite):
         self.visible = False
         SPRITES.remove(self)
 
-    def physical_move(self, x_move, y_move):
+    def physical_move(self, x_case_move, y_case_move):
         """ Movement from present physical position to x_move horizontal, y_move vertical new coordinates (negative move authorised)
         """
-        self.rect.move_ip(x_move * LABYRINTH.box_px_len, y_move * LABYRINTH.box_px_len)
+        x_move = x_case_move * LABYRINTH.box_px_len
+        y_move = y_case_move * LABYRINTH.box_px_len
+        self.rect.move_ip((self.rect.x + x_move), (self.rect.y + y_move))
 
     def random_coordinates(self):
         """ Random coordinates generation, in labyrinth_matrix's coordinates range
         """
+        # TODO: add a way to prevent potential infinite loop, in case matrix would contain less than three 'c' cases
         x_coord, y_coord = random.randint(0, LABYRINTH.grid_len - 1), random.randint(0, LABYRINTH.grid_len - 1)
-        while LABYRINTH.labyrinth_matrix[x_coord][y_coord] == 'W':
-            x_coord, y_coord = random.randint(0, LABYRINTH.grid_len - 1), random.randint(0, LABYRINTH.grid_len - 1)
+        while LABYRINTH.labyrinth_matrix[y_coord][x_coord] == 'W' or (x_coord, y_coord) == (LABYRINTH.drop_point[0], LABYRINTH.drop_point[1]):
+            x_coord, y_coord = random.randint(1, LABYRINTH.grid_len -2), random.randint(1, LABYRINTH.grid_len -2)
         self.physical_move(x_coord, y_coord)
 
 
