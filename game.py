@@ -23,28 +23,26 @@ def main():
     while on_air:
         # Frames Per Second definition
         clock.tick(frtd.stg.FPS)
-        # quit event definition
-        for event in frtd.pg.event.get():
-# pylint doesn't recognize pygame's quit member
-# pylint: disable-msg=no-member
-            if event.type == frtd.pg.QUIT:
-# pylint: enable-msg=no-member
-                on_air = False
-            elif event.type == frtd.pg.KEYDOWN:
-                if event.key in (frtd.pg.K_DOWN, frtd.pg.K_KP2):
-                    macgyver.physical_move(0, 1)
-                elif event.key in (frtd.pg.K_UP, frtd.pg.K_KP8):
-                    macgyver.physical_move(0, -1)
-                elif event.key in (frtd.pg.K_LEFT, frtd.pg.K_KP4):
-                    macgyver.physical_move(-1, 0)
-                elif event.key in (frtd.pg.K_RIGHT, frtd.pg.K_KP6):
-                    macgyver.physical_move(1, 0)
         display.screen.blit(background, (0, 0))
         frtd.SPRITES.draw(display.screen)
         frtd.pg.display.update()
-
+        # pylint doesn't recognize pygame's members (QUIT, KEYDOWN... see below)
 # pylint: disable-msg=no-member
-frtd.pg.quit()
+        # allowed events management
+        frtd.pg.event.set_allowed((frtd.pg.QUIT, frtd.pg.KEYDOWN))
+        event = frtd.pg.event.wait()
+        if event.type == frtd.pg.KEYDOWN:
+            if event.key in (frtd.pg.K_DOWN, frtd.pg.K_KP2):
+                macgyver.physical_move(0, 1)
+            elif event.key in (frtd.pg.K_UP, frtd.pg.K_KP8):
+                macgyver.physical_move(0, -1)
+            elif event.key in (frtd.pg.K_LEFT, frtd.pg.K_KP4):
+                macgyver.physical_move(-1, 0)
+            elif event.key in (frtd.pg.K_RIGHT, frtd.pg.K_KP6):
+                macgyver.physical_move(1, 0)
+        # quit event definition
+        elif event.type == frtd.pg.QUIT:
+            on_air = False
 # pylint: enable-msg=no-member
 
 
