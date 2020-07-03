@@ -151,7 +151,7 @@ class MovingObject(pg.sprite.Sprite):
         Object is deleted from SPRITES group, as it doesn't mustn't be blitted on the screen anymore.
         """
         self.visible = False
-        SPRITES.remove(self)
+        self.kill
 
     def physical_move(self, x_case_move, y_case_move):
         """ Movement from present physical position to x_case_move horizontal, y_case_move vertical new cases (negative move authorised).

@@ -17,6 +17,11 @@ def main():
     background = display.screen.copy()
     sprites = frtd.sprites_gen(surfaces)
     macgyver = sprites['macgyver']
+    objects_dict = {
+        'needle': sprites['needle'].rect,
+        'plastube': sprites['plastube'].rect,
+        'ether': sprites['ether'].rect
+    }
 
     # game time!
     on_air = True
@@ -40,6 +45,9 @@ def main():
                 macgyver.physical_move(-1, 0)
             elif event.key in (frtd.pg.K_RIGHT, frtd.pg.K_KP6):
                 macgyver.physical_move(1, 0)
+            collision_index = macgyver.rect.collidedict(objects_dict, True)
+            if collision_index:
+                sprites[collision_index[0]].pick
         # quit event definition
         elif event.type == frtd.pg.QUIT:
             on_air = False
