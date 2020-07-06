@@ -5,6 +5,7 @@
 """
 
 import frontend as frtd
+import backend as bckd
 
 def main():
     """ TODO : Docstring to be completed
@@ -17,6 +18,11 @@ def main():
     background = display.screen.copy()
     frtd.sprites_gen(surfaces)
     macgyver = frtd.MOBILE_SPRITES.sprites()[0]
+    # pylint doesn't recognize pygame's members (QUIT, KEYDOWN... see below)
+    # pylint: disable-msg=no-member
+    # allowed events management
+    frtd.pg.event.set_allowed((frtd.pg.QUIT, frtd.pg.KEYDOWN))
+    # pylint: enable-msg=no-member
 
     # game time!
     on_air = True
@@ -27,28 +33,8 @@ def main():
         frtd.MOTIONLESS_SPRITES.draw(display.screen)
         frtd.MOBILE_SPRITES.draw(display.screen)
         frtd.pg.display.update()
-        # pylint doesn't recognize pygame's members (QUIT, KEYDOWN... see below)
-# pylint: disable-msg=no-member
-        # allowed events management
-        frtd.pg.event.set_allowed((frtd.pg.QUIT, frtd.pg.KEYDOWN))
         event = frtd.pg.event.wait()
-        if event.type == frtd.pg.KEYDOWN:
-            if event.key in (frtd.pg.K_DOWN, frtd.pg.K_KP2):
-                macgyver.physical_move(0, 1)
-            elif event.key in (frtd.pg.K_UP, frtd.pg.K_KP8):
-                macgyver.physical_move(0, -1)
-            elif event.key in (frtd.pg.K_LEFT, frtd.pg.K_KP4):
-                macgyver.physical_move(-1, 0)
-            elif event.key in (frtd.pg.K_RIGHT, frtd.pg.K_KP6):
-                macgyver.physical_move(1, 0)
-            collision_index = macgyver.rect.collidelist(frtd.MOTIONLESS_SPRITES.sprites())
-            if collision_index != -1:
-                frtd.MOTIONLESS_SPRITES.sprites()[collision_index].pick()
-        # quit event definition
-        elif event.type == frtd.pg.QUIT:
-            on_air = False
-# pylint: enable-msg=no-member
-
+        on_air = bckd.get_events(event, on_air, macgyver)
 
 if __name__ == '__main__':
     main()

@@ -5,6 +5,9 @@
 """
 
 import settings as stg
+import frontend as frtd
+
+import  pygame as pg
 
 class Labyrinth:
     """ Generation and interactions with the grid labyrinth on which the game is played
@@ -41,6 +44,29 @@ class Labyrinth:
         """
         box_px_len = int(stg.WINDOW_RESOLUTION[0] / self.grid_len)
         return box_px_len
+
+def get_events(event, on_air, macgyver):
+# pylint doesn't recognize pygame's members (QUIT, KEYDOWN... see below)
+# pylint: disable-msg=no-member
+    if event.type == pg.KEYDOWN:
+        if event.key in (pg.K_DOWN, pg.K_KP2):
+            macgyver.physical_move(0, 1)
+        elif event.key in (pg.K_UP, pg.K_KP8):
+            macgyver.physical_move(0, -1)
+        elif event.key in (pg.K_LEFT, pg.K_KP4):
+            macgyver.physical_move(-1, 0)
+        elif event.key in (pg.K_RIGHT, pg.K_KP6):
+            macgyver.physical_move(1, 0)
+        elif event.key == pg.K_ESCAPE:
+            on_air = False
+        collision_index = macgyver.rect.collidelist(frtd.MOTIONLESS_SPRITES.sprites())
+        if collision_index != -1:
+            frtd.MOTIONLESS_SPRITES.sprites()[collision_index].pick()
+    # quit event definition
+    elif event.type == pg.QUIT:
+        on_air = False
+# pylint: enable-msg=no-member
+    return on_air
 
 def main():
     """ In case script is self executed, all imported values are shown
