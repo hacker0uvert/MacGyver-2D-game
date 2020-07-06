@@ -7,20 +7,21 @@
 import json
 import os
 
-# directories
+# directories #
 SCRIPT_DIR = os.path.split(os.path.abspath(__file__))[0]
 RESOURCES_DIR = os.path.join(SCRIPT_DIR, 'resources')
 
-# files
+# files #
 MATRIX_FILE = 'matrix.json'
 SURFACES_FILE = 'surfaces.json'
 ICON_FILE = 'MacGyver.png'
 
-# parameters
+# parameters #
 WINDOW_RESOLUTION = (600, 600)
 WINDOW_CAPTION = 'MacGyver-2D'
 FPS = 25
-SPRITES_LIST = [('macgyver', True), ('guardian', True), ('needle', True), ('plastube', True), ('ether', True), ('dead', False), ('rip', False)]
+# sprites are listed with their name, sprite.group name, and visibility boolean
+SPRITES_LIST = [('macgyver', 'mobile', True), ('guardian', 'motionless', True), ('needle', 'motionless', True), ('plastube', 'motionless', True), ('ether', 'motionless', True), ('dead', 'motionless', False), ('rip', 'motionless', False)]
 
 def json_load(directory, json_file):
     """ Json file loading function

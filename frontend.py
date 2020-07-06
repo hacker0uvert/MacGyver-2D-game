@@ -15,7 +15,8 @@ import settings as stg
 RESOURCES_DIR = stg.RESOURCES_DIR
 LABYRINTH = bckd.Labyrinth()
 CLOCK = pg.time.Clock()
-SPRITES = pg.sprite.Group()
+MOTIONLESS_SPRITES = pg.sprite.Group()
+MOBILE_SPRITES = pg.sprite.Group()
 
 class Window:
     """ Physical window management
@@ -116,7 +117,7 @@ class MovingObject(pg.sprite.Sprite):
     """ Sprites (characters and objects) management
     """
 
-    def __init__(self, name, surface, visible):
+    def __init__(self, name, surface, group, visible):
         """ Class initiator.
         MacGyver and Guardian are respectively positionned on drop_point and exit_point.
         Ether, needle and plastube sprites are randomly dropped in the corridors.
@@ -128,7 +129,7 @@ class MovingObject(pg.sprite.Sprite):
         self.image = surface
         self.rect_def()
         if self.visible:
-            self.add_to_sprites()
+            self.add_to_sprites(group)
         if name == 'macgyver':
             self.physical_move(LABYRINTH.drop_point[0], LABYRINTH.drop_point[1])
         if name == 'guardian':
@@ -141,10 +142,13 @@ class MovingObject(pg.sprite.Sprite):
         """
         self.rect = self.image.get_rect()
 
-    def add_to_sprites(self):
+    def add_to_sprites(self, group):
         """ MovingObject addition to the all_SPRITES group, so as to be blitted on the screen.
         """
-        SPRITES.add(self)
+        if group == 'motionless':
+            MOTIONLESS_SPRITES.add(self)
+        elif group == 'mobile':
+            MOBILE_SPRITES.add(self)
 
     def pick(self):
         """ Method used to specify that an object was picked by MacGyver while moving on the grid.
@@ -191,9 +195,9 @@ def sprites_gen(surfaces):
     """ Sprites generation and conversion into MovingObject function
     """
     sprites = {}
-    for name, visibility in stg.SPRITES_LIST:
+    for name, group, visibility in stg.SPRITES_LIST:
         surface = surfaces[name]
-        sprite = MovingObject(name, surface, visibility)
+        sprite = MovingObject(name, surface, group, visibility)
         sprites[name] = sprite
     return sprites
 

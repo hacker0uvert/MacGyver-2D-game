@@ -16,12 +16,7 @@ def main():
     display.background_init(surfaces)
     background = display.screen.copy()
     sprites = frtd.sprites_gen(surfaces)
-    macgyver = sprites['macgyver']
-    objects_dict = {
-        'needle': sprites['needle'].rect,
-        'plastube': sprites['plastube'].rect,
-        'ether': sprites['ether'].rect
-    }
+    macgyver = frtd.MOBILE_SPRITES.sprites()[0]
 
     # game time!
     on_air = True
@@ -29,7 +24,8 @@ def main():
         # Frames Per Second definition
         clock.tick(frtd.stg.FPS)
         display.screen.blit(background, (0, 0))
-        frtd.SPRITES.draw(display.screen)
+        frtd.MOTIONLESS_SPRITES.draw(display.screen)
+        frtd.MOBILE_SPRITES.draw(display.screen)
         frtd.pg.display.update()
         # pylint doesn't recognize pygame's members (QUIT, KEYDOWN... see below)
 # pylint: disable-msg=no-member
@@ -45,7 +41,7 @@ def main():
                 macgyver.physical_move(-1, 0)
             elif event.key in (frtd.pg.K_RIGHT, frtd.pg.K_KP6):
                 macgyver.physical_move(1, 0)
-            collision_index = macgyver.rect.collidedict(objects_dict, True)
+            collision_index = macgyver.rect.collidelist(frtd.MOTIONLESS_SPRITES.sprites())
             if collision_index:
                 sprites[collision_index[0]].pick
         # quit event definition
