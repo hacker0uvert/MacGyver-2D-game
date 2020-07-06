@@ -15,7 +15,7 @@ def main():
     clock = frtd.CLOCK
     display.background_init(surfaces)
     background = display.screen.copy()
-    sprites = frtd.sprites_gen(surfaces)
+    frtd.sprites_gen(surfaces)
     macgyver = frtd.MOBILE_SPRITES.sprites()[0]
 
     # game time!
@@ -42,8 +42,8 @@ def main():
             elif event.key in (frtd.pg.K_RIGHT, frtd.pg.K_KP6):
                 macgyver.physical_move(1, 0)
             collision_index = macgyver.rect.collidelist(frtd.MOTIONLESS_SPRITES.sprites())
-            if collision_index:
-                sprites[collision_index[0]].pick
+            if collision_index != -1:
+                frtd.MOTIONLESS_SPRITES.sprites()[collision_index].pick()
         # quit event definition
         elif event.type == frtd.pg.QUIT:
             on_air = False
