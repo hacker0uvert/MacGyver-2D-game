@@ -143,6 +143,9 @@ class MovingObject(pg.sprite.Sprite):
         if self.visible:
             self.add_to_sprites(group)
         if self.name == 'macgyver':
+            self.direction = 'right'
+            self.right_image = self.image
+            self.left_image = pg.transform.flip(self.image, True, False)
             self.physical_move(LABYRINTH.drop_point[0], LABYRINTH.drop_point[1])
             self.won = False
         if self.name == 'guardian':
@@ -183,6 +186,14 @@ class MovingObject(pg.sprite.Sprite):
             move_boolean = self.check_if_corridor(x_new_coordinates, y_new_coordinates)
             if move_boolean:
                 self.rect.move_ip(x_move, y_move)
+                if self.name == 'macgyver':
+                    if x_move < 0 and self.direction == 'right':
+                        self.direction = 'left'
+                        self.image = self.left_image
+                    elif x_move > 0 and self.direction == 'left':
+                        self.direction = 'right'
+                        self.image = self.right_image
+
     
     def check_if_corridor(self, x_coordinates, y_coordinates):
         """ Used to verify if a position is a corridor in labyrinth's matrix.
