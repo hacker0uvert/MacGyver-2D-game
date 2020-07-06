@@ -167,7 +167,18 @@ class MovingObject(pg.sprite.Sprite):
         x_new_coordinates = self.rect.x + x_move
         y_new_coordinates = self.rect.y + y_move
         if x_new_coordinates <= (stg.WINDOW_RESOLUTION[0] - LABYRINTH.box_px_len) and x_new_coordinates >= 0 and y_new_coordinates <= (stg.WINDOW_RESOLUTION[1] - LABYRINTH.box_px_len) and y_new_coordinates >= 0:
-            self.rect.move_ip(x_move, y_move)
+            move_boolean = self.check_if_corridor(x_new_coordinates, y_new_coordinates)
+            if move_boolean:
+                self.rect.move_ip(x_move, y_move)
+    
+    def check_if_corridor(self, x_coordinates, y_coordinates):
+        grid_case = (int(x_coordinates / LABYRINTH.box_px_len), int(y_coordinates / LABYRINTH.box_px_len))
+        case_texture = LABYRINTH.labyrinth_matrix[grid_case[1]][grid_case[0]]
+        if case_texture == 'c':
+            corridor = True
+        else:
+            corridor = False
+        return corridor
 
     def random_coordinates(self):
         """ Random coordinates generation, in labyrinth_matrix's coordinates range
@@ -194,12 +205,9 @@ def surfaces_dict():
 def sprites_gen(surfaces):
     """ Sprites generation and conversion into MovingObject function
     """
-    sprites = {}
     for name, group, visibility in stg.SPRITES_LIST:
         surface = surfaces[name]
-        sprite = MovingObject(name, surface, group, visibility)
-        sprites[name] = sprite
-    return sprites
+        MovingObject(name, surface, group, visibility)
 
 def main():
     """ Window is loaded on script execution.
