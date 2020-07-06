@@ -4,10 +4,10 @@
 """ Backend labyrinth grid generation and management module
 """
 
+import  pygame as pg
+
 import settings as stg
 import frontend as frtd
-
-import  pygame as pg
 
 class Labyrinth:
     """ Generation and interactions with the grid labyrinth on which the game is played
@@ -46,6 +46,9 @@ class Labyrinth:
         return box_px_len
 
 def get_events(event, on_air, macgyver):
+    """ Function used to manage pygame keyboard and quit events.
+    MacGyver's collisions with other sprites are checked.
+    """
 # pylint doesn't recognize pygame's members (QUIT, KEYDOWN... see below)
 # pylint: disable-msg=no-member
     if event.type == pg.KEYDOWN:

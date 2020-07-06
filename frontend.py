@@ -62,6 +62,17 @@ class Window:
             x_iterator = 0
         pg.display.flip()
 
+    def print_won_message(self):
+        """ Method used to define and print won message onscreen.
+        """
+        pg.font.init()
+        # font size is proportionate to display's horizontal resolution
+        font = pg.font.Font(None, stg.FONT_SIZE)
+        font_surface = font.render(stg.WON_MESSAGE, True, stg.WON_MESSAGE_COLOR)
+        font_rect = font_surface.get_rect()
+        self.screen.blit(font_surface, font_rect)
+        pg.display.update()
+
 
 class Texture:
     """ Textures manipulation
@@ -126,15 +137,17 @@ class MovingObject(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         # value used to define if object has been collected by MacGyver
         self.visible = visible
+        self.name = name
         self.image = surface
         self.rect_def()
         if self.visible:
             self.add_to_sprites(group)
-        if name == 'macgyver':
+        if self.name == 'macgyver':
             self.physical_move(LABYRINTH.drop_point[0], LABYRINTH.drop_point[1])
-        if name == 'guardian':
+            self.won = False
+        if self.name == 'guardian':
             self.physical_move(LABYRINTH.exit_point[0], LABYRINTH.exit_point[1])
-        if name in ('ether', 'needle', 'plastube'):
+        if self.name in ('ether', 'needle', 'plastube'):
             self.random_coordinates()
 
     def rect_def(self):
@@ -172,10 +185,16 @@ class MovingObject(pg.sprite.Sprite):
                 self.rect.move_ip(x_move, y_move)
     
     def check_if_corridor(self, x_coordinates, y_coordinates):
+        """ Used to verify if a position is a corridor in labyrinth's matrix.
+        This is to ensure that sprites are unable to get threw or on a wall.
+        grid_case is a tuple, corresponding to the grid's case position in the labyrinth_matrix.
+        """
         grid_case = (int(x_coordinates / LABYRINTH.box_px_len), int(y_coordinates / LABYRINTH.box_px_len))
         case_texture = LABYRINTH.labyrinth_matrix[grid_case[1]][grid_case[0]]
         if case_texture == 'c':
             corridor = True
+            if grid_case == LABYRINTH.exit_point and self.name == 'macgyver':
+                self.won = True
         else:
             corridor = False
         return corridor
