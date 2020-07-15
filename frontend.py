@@ -58,12 +58,17 @@ class Window:
                     self.screen.blit(surfaces['wall'], (x_iterator*LABYRINTH.box_px_len, y_iterator*LABYRINTH.box_px_len))
                 elif LABYRINTH.labyrinth_matrix[y_iterator][x_iterator] == 'c':
                     self.screen.blit(surfaces['corridor'], (x_iterator*LABYRINTH.box_px_len, y_iterator*LABYRINTH.box_px_len))
+                    # corridors coordinates list generation
+                    LABYRINTH.corridors_coordinates.append((x_iterator, y_iterator))
                 elif LABYRINTH.labyrinth_matrix[y_iterator][x_iterator] == 'i':
                     self.screen.blit(surfaces['counter'], (x_iterator*LABYRINTH.box_px_len, y_iterator*LABYRINTH.box_px_len))
                 x_iterator += 1
             y_iterator += 1
             x_iterator = 0
         pg.display.flip()
+        # drop_point and exit_point coordinates tuples remove from LABYRINTH.corridors_coordinates
+        LABYRINTH.corridors_coordinates.remove(LABYRINTH.drop_point)
+        LABYRINTH.corridors_coordinates.remove(LABYRINTH.exit_point)
 
     def print_won_message(self):
         """ Method used to define and print won message onscreen.
@@ -171,7 +176,7 @@ class MovingObject(pg.sprite.Sprite):
 
     def pick(self):
         """ Method used to specify that an object was picked by MacGyver while moving on the grid.
-        Object is deleted from SPRITES group, as it doesn't mustn't be blitted on the screen anymore.
+        Object is deleted from SPRITES group, as it mustn't be blitted on the screen anymore.
         """
         self.visible = False
         self.kill()
@@ -217,10 +222,11 @@ class MovingObject(pg.sprite.Sprite):
     def random_coordinates(self):
         """ Random coordinates generation, in labyrinth_matrix's coordinates range
         """
-        # TODO: add a way to prevent potential infinite loop, in case matrix would contain less than three 'c' cases
-        x_coord, y_coord = random.randint(0, LABYRINTH.grid_len - 1), random.randint(0, LABYRINTH.grid_len - 1)
-        while LABYRINTH.labyrinth_matrix[y_coord][x_coord] == 'W' or (x_coord, y_coord) == (LABYRINTH.drop_point[0], LABYRINTH.drop_point[1]):
-            x_coord, y_coord = random.randint(1, LABYRINTH.grid_len -2), random.randint(1, LABYRINTH.grid_len -2)
+        if len(LABYRINTH.corridors_coordinates) < 1:
+            raise ValueError("Not enough corridors available to generate syringe's items. Please check matrix.json's configuration or relay this message to the app's developer")
+        i = random.randint(0, len(LABYRINTH.corridors_coordinates) - 1)
+        coordinates = LABYRINTH.corridors_coordinates.pop(i)
+        x_coord, y_coord = coordinates[0], coordinates[1]
         self.physical_move(x_coord, y_coord)
 
 

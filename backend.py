@@ -19,6 +19,7 @@ class Labyrinth:
         self.labyrinth_matrix, self.drop_point, self.exit_point = self.grid_gen()
         self.grid_len = self.grid_length()
         self.box_px_len = self.boxes_pixel_length()
+        self.corridors_coordinates = []
 
     def grid_gen(self):
         """ Generates the grid statically
