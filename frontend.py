@@ -49,14 +49,17 @@ class Window:
         """ Walls and corridors background textures initialisation.
         In the json file, 'wall' is corresponding to 'W' in the labyrinth_matrix.
         'c' stands for 'corridor'
+        'i' for 'items_counter'
         """
         x_iterator, y_iterator = 0, 0
         while y_iterator in range(LABYRINTH.grid_len):
             while x_iterator in range(LABYRINTH.grid_len):
                 if LABYRINTH.labyrinth_matrix[y_iterator][x_iterator] == 'W':
                     self.screen.blit(surfaces['wall'], (x_iterator*LABYRINTH.box_px_len, y_iterator*LABYRINTH.box_px_len))
-                else:
+                elif LABYRINTH.labyrinth_matrix[y_iterator][x_iterator] == 'c':
                     self.screen.blit(surfaces['corridor'], (x_iterator*LABYRINTH.box_px_len, y_iterator*LABYRINTH.box_px_len))
+                elif LABYRINTH.labyrinth_matrix[y_iterator][x_iterator] == 'i':
+                    self.screen.blit(surfaces['counter'], (x_iterator*LABYRINTH.box_px_len, y_iterator*LABYRINTH.box_px_len))
                 x_iterator += 1
             y_iterator += 1
             x_iterator = 0
@@ -186,6 +189,7 @@ class MovingObject(pg.sprite.Sprite):
             move_boolean = self.check_if_corridor(x_new_coordinates, y_new_coordinates)
             if move_boolean:
                 self.rect.move_ip(x_move, y_move)
+                # macgyver's direction management
                 if self.name == 'macgyver':
                     if x_move < 0 and self.direction == 'right':
                         self.direction = 'left'

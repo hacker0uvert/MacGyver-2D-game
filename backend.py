@@ -78,9 +78,9 @@ def main():
     labyrinth.grid_gen()
     print(f"Imported values verification:\n- game matrix: \n {labyrinth.labyrinth_matrix}")
     print(f"- drop point coordinates: \n{labyrinth.drop_point}, on a:")
-    print(f"{labyrinth.labyrinth_matrix[labyrinth.drop_point[0]][labyrinth.drop_point[1]]} value")
+    print(f"{labyrinth.labyrinth_matrix[labyrinth.drop_point[1]][labyrinth.drop_point[0]]} value")
     print(f"- exit point coordinates:\n{labyrinth.exit_point}, on a:")
-    print(f"{labyrinth.labyrinth_matrix[labyrinth.drop_point[0]][labyrinth.drop_point[1]]} value")
+    print(f"{labyrinth.labyrinth_matrix[labyrinth.drop_point[1]][labyrinth.drop_point[0]]} value")
 
 if __name__ == '__main__':
     main()

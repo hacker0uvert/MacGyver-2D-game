@@ -32,7 +32,7 @@ def main():
         display.screen.blit(background, (0, 0))
         frtd.MOTIONLESS_SPRITES.draw(display.screen)
         frtd.MOBILE_SPRITES.draw(display.screen)
-        if macgyver.won == True:
+        if macgyver.won:
             display.print_won_message()
             # wait for three seconds before closing display
             clock.tick(0.3)
