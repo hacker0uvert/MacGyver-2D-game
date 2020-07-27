@@ -62,6 +62,8 @@ class Window:
                     LABYRINTH.corridors_coordinates.append((x_iterator, y_iterator))
                 elif LABYRINTH.labyrinth_matrix[y_iterator][x_iterator] == 'i':
                     self.screen.blit(surfaces['counter'], (x_iterator*LABYRINTH.box_px_len, y_iterator*LABYRINTH.box_px_len))
+                    # counter coordinates list generation
+                    LABYRINTH.counters_coordinates.append((x_iterator, y_iterator))
                 x_iterator += 1
             y_iterator += 1
             x_iterator = 0
@@ -178,32 +180,41 @@ class MovingObject(pg.sprite.Sprite):
         """ Method used to specify that an object was picked by MacGyver while moving on the grid.
         Object is deleted from SPRITES group, as it mustn't be blitted on the screen anymore.
         """
-        self.visible = False
-        self.kill()
+        if self.name == 'ether' or self.name == 'plastube' or self.name == 'needle':
+            self.physical_move(0, 0, corridor = False)
 
-    def physical_move(self, x_case_move, y_case_move):
+
+    def physical_move(self, x_case_move, y_case_move, corridor = True):
         """ Movement from present physical position to x_case_move horizontal, y_case_move vertical new cases (negative move authorised).
         x_move and y_move correspond to the same movement, converted into pixels, depending on the current display size and number of grid cases.
         New coordinates are verified, so that sprite can't get out of display.
         """
-        x_move = x_case_move * LABYRINTH.box_px_len
-        y_move = y_case_move * LABYRINTH.box_px_len
-        x_new_coordinates = self.rect.x + x_move
-        y_new_coordinates = self.rect.y + y_move
-        if x_new_coordinates <= (stg.WINDOW_RESOLUTION[0] - LABYRINTH.box_px_len) and x_new_coordinates >= 0 and y_new_coordinates <= (stg.WINDOW_RESOLUTION[1] - LABYRINTH.box_px_len) and y_new_coordinates >= 0:
-            move_boolean = self.check_if_corridor(x_new_coordinates, y_new_coordinates)
-            if move_boolean:
-                self.rect.move_ip(x_move, y_move)
-                # macgyver's direction management
-                if self.name == 'macgyver':
-                    if x_move < 0 and self.direction == 'right':
-                        self.direction = 'left'
-                        self.image = self.left_image
-                    elif x_move > 0 and self.direction == 'left':
-                        self.direction = 'right'
-                        self.image = self.right_image
+        if corridor == False:
+            coordinates = LABYRINTH.counters_coordinates.pop(0)
+            x_new_coordinates = coordinates[0] * LABYRINTH.box_px_len
+            y_new_coordinates = coordinates[1] * LABYRINTH.box_px_len
+            x_move = x_new_coordinates - self.rect.x
+            y_move = y_new_coordinates - self.rect.y
+            move_boolean = True
+        elif corridor == True:
+            x_move = x_case_move * LABYRINTH.box_px_len
+            y_move = y_case_move * LABYRINTH.box_px_len
+            x_new_coordinates = self.rect.x + x_move
+            y_new_coordinates = self.rect.y + y_move
+            if x_new_coordinates <= (stg.WINDOW_RESOLUTION[0] - LABYRINTH.box_px_len) and x_new_coordinates >= 0 and y_new_coordinates <= (stg.WINDOW_RESOLUTION[1] - LABYRINTH.box_px_len) and y_new_coordinates >= 0:
+                move_boolean = self.check_if_corridor(x_new_coordinates, y_new_coordinates)
+        if move_boolean:
+            self.rect.move_ip(x_move, y_move)
+            # macgyver's direction management
+            if self.name == 'macgyver':
+                if x_move < 0 and self.direction == 'right':
+                    self.direction = 'left'
+                    self.image = self.left_image
+                elif x_move > 0 and self.direction == 'left':
+                    self.direction = 'right'
+                    self.image = self.right_image
 
-    
+
     def check_if_corridor(self, x_coordinates, y_coordinates):
         """ Used to verify if a position is a corridor in labyrinth's matrix.
         This is to ensure that sprites are unable to get threw or on a wall.
