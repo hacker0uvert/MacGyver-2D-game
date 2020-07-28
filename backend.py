@@ -4,7 +4,7 @@
 """ Backend labyrinth grid generation and management module
 """
 
-import  pygame as pg
+import pygame as pg
 
 import settings as stg
 import frontend as frtd
@@ -51,6 +51,7 @@ def get_events(event, on_air, macgyver):
     """ Function used to manage pygame keyboard and quit events.
     MacGyver's collisions with other sprites are checked.
     """
+    SYRINGE = frtd.MovingObject.sprites['syringe']
 # pylint doesn't recognize pygame's members (QUIT, KEYDOWN... see below)
 # pylint: disable-msg=no-member
     if event.type == pg.KEYDOWN:
@@ -67,6 +68,10 @@ def get_events(event, on_air, macgyver):
         collision_index = macgyver.rect.collidelist(frtd.MOTIONLESS_SPRITES.sprites())
         if collision_index != -1:
             frtd.MOTIONLESS_SPRITES.sprites()[collision_index].pick()
+            if ('plastube' and 'ether' and 'needle' in frtd.PICKED_OBJECTS) and ('syringe' not in frtd.PICKED_OBJECTS):
+                SYRINGE.visible = True
+                SYRINGE.add_to_sprites()
+                SYRINGE.pick()
     # quit event definition
     elif event.type == pg.QUIT:
         on_air = False

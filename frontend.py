@@ -17,6 +17,7 @@ LABYRINTH = bckd.Labyrinth()
 CLOCK = pg.time.Clock()
 MOTIONLESS_SPRITES = pg.sprite.Group()
 MOBILE_SPRITES = pg.sprite.Group()
+PICKED_OBJECTS = []
 
 class Window:
     """ Physical window management
@@ -138,6 +139,8 @@ class MovingObject(pg.sprite.Sprite):
     """ Sprites (characters and objects) management
     """
 
+    sprites = {}
+
     def __init__(self, name, surface, group, visible):
         """ Class initiator.
         MacGyver and Guardian are respectively positionned on drop_point and exit_point.
@@ -146,12 +149,14 @@ class MovingObject(pg.sprite.Sprite):
         """
         pg.sprite.Sprite.__init__(self)
         # value used to define if object has been collected by MacGyver
-        self.visible = visible
         self.name = name
+        self.group = group
+        self.visible = visible
         self.image = surface
         self.rect_def()
+        self.sprites[self.name] = self
         if self.visible:
-            self.add_to_sprites(group)
+            self.add_to_sprites()
         if self.name == 'macgyver':
             self.direction = 'right'
             self.right_image = self.image
@@ -168,20 +173,21 @@ class MovingObject(pg.sprite.Sprite):
         """
         self.rect = self.image.get_rect()
 
-    def add_to_sprites(self, group):
+    def add_to_sprites(self):
         """ MovingObject addition to the all_SPRITES group, so as to be blitted on the screen.
         """
-        if group == 'motionless':
+        if self.group == 'motionless':
             MOTIONLESS_SPRITES.add(self)
-        elif group == 'mobile':
+        elif self.group == 'mobile':
             MOBILE_SPRITES.add(self)
 
     def pick(self):
         """ Method used to specify that an object was picked by MacGyver while moving on the grid.
         Object is deleted from SPRITES group, as it mustn't be blitted on the screen anymore.
         """
-        if self.name == 'ether' or self.name == 'plastube' or self.name == 'needle':
+        if self.name in ('ether', 'needle', 'plastube', 'syringe'):
             self.physical_move(0, 0, corridor = False)
+            PICKED_OBJECTS.append(self.name)
 
 
     def physical_move(self, x_case_move, y_case_move, corridor = True):
@@ -224,7 +230,7 @@ class MovingObject(pg.sprite.Sprite):
         case_texture = LABYRINTH.labyrinth_matrix[grid_case[1]][grid_case[0]]
         if case_texture == 'c':
             corridor = True
-            if grid_case == LABYRINTH.exit_point and self.name == 'macgyver':
+            if (grid_case == LABYRINTH.exit_point and self.name == 'macgyver' and 'syringe' in PICKED_OBJECTS):
                 self.won = True
         else:
             corridor = False

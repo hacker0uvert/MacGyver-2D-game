@@ -17,7 +17,7 @@ def main():
     display.background_init(surfaces)
     background = display.screen.copy()
     frtd.sprites_gen(surfaces)
-    macgyver = frtd.MOBILE_SPRITES.sprites()[0]
+    macgyver = frtd.MovingObject.sprites['macgyver']
     # pylint doesn't recognize pygame's members (QUIT, KEYDOWN... see below)
     # pylint: disable-msg=no-member
     # allowed events management
