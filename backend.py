@@ -68,7 +68,7 @@ def get_events(event, on_air, macgyver):
         collision_index = macgyver.rect.collidelist(frtd.MOTIONLESS_SPRITES.sprites())
         if collision_index != -1:
             frtd.MOTIONLESS_SPRITES.sprites()[collision_index].pick()
-            if ('plastube' and 'ether' and 'needle' in frtd.PICKED_OBJECTS) and ('syringe' not in frtd.PICKED_OBJECTS):
+            if 'needle' in frtd.PICKED_OBJECTS and 'ether' in frtd.PICKED_OBJECTS and 'plastube' in frtd.PICKED_OBJECTS and 'syringe' not in frtd.PICKED_OBJECTS:
                 SYRINGE.visible = True
                 SYRINGE.add_to_sprites()
                 SYRINGE.pick()
