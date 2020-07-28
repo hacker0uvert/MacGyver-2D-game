@@ -273,19 +273,3 @@ def sprites_gen(surfaces):
     for name, group, visibility in stg.SPRITES_LIST:
         surface = surfaces[name]
         MovingObject(name, surface, group, visibility)
-
-def main():
-    """ Window is loaded on script execution.
-    Every surface is then individually printed for test purposes.
-    """
-    display = Window()
-    display.load()
-    surfaces = surfaces_dict()
-    i = 0
-    while i in range(len(surfaces)):
-        display.screen.blit(surfaces[list(surfaces.keys())[i]], (i*LABYRINTH.box_px_len, 0))
-        i += 1
-    pg.display.flip()
-
-if __name__ == '__main__':
-    main()
