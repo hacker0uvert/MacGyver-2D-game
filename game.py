@@ -33,7 +33,12 @@ def main():
         frtd.MOTIONLESS_SPRITES.draw(display.screen)
         frtd.MOBILE_SPRITES.draw(display.screen)
         if macgyver.won:
-            display.print_won_message()
+            display.print_end_message('won')
+            # wait for three seconds before closing display
+            clock.tick(0.3)
+            on_air = False
+        elif macgyver.dead:
+            display.print_end_message('lose')
             # wait for three seconds before closing display
             clock.tick(0.3)
             on_air = False

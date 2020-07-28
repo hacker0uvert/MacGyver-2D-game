@@ -73,13 +73,16 @@ class Window:
         LABYRINTH.corridors_coordinates.remove(LABYRINTH.drop_point)
         LABYRINTH.corridors_coordinates.remove(LABYRINTH.exit_point)
 
-    def print_won_message(self):
+    def print_end_message(self, exit_status):
         """ Method used to define and print won message onscreen.
         """
         pg.font.init()
         # font size is proportionate to display's horizontal resolution
         font = pg.font.Font(None, stg.FONT_SIZE)
-        font_surface = font.render(stg.WON_MESSAGE, True, stg.WON_MESSAGE_COLOR)
+        if exit_status == 'won':
+            font_surface = font.render(stg.WON_MESSAGE, True, stg.WON_MESSAGE_COLOR)
+        elif exit_status == 'lose':
+            font_surface = font.render(stg.DEAD_MESSAGE, True, stg.DEAD_MESSAGE_COLOR)
         font_rect = font_surface.get_rect()
         self.screen.blit(font_surface, font_rect)
         pg.display.update()
@@ -163,6 +166,7 @@ class MovingObject(pg.sprite.Sprite):
             self.left_image = pg.transform.flip(self.image, True, False)
             self.physical_move(LABYRINTH.drop_point[0], LABYRINTH.drop_point[1])
             self.won = False
+            self.dead = False
         if self.name == 'guardian':
             self.physical_move(LABYRINTH.exit_point[0], LABYRINTH.exit_point[1])
         if self.name in ('ether', 'needle', 'plastube'):
@@ -230,8 +234,12 @@ class MovingObject(pg.sprite.Sprite):
         case_texture = LABYRINTH.labyrinth_matrix[grid_case[1]][grid_case[0]]
         if case_texture == 'c':
             corridor = True
-            if (grid_case == LABYRINTH.exit_point and self.name == 'macgyver' and 'syringe' in PICKED_OBJECTS):
-                self.won = True
+            if (grid_case == LABYRINTH.exit_point and self.name == 'macgyver'):
+                if 'syringe' in PICKED_OBJECTS:
+                    self.won = True
+                else:
+                    self.dead = True
+                    self.image = MovingObject.sprites['dead'].image
         else:
             corridor = False
         return corridor
