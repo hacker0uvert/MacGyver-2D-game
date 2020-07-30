@@ -2,13 +2,22 @@
 # -*- coding: utf-8 -*-
 
 """ MacGyver game : you're gonna have to help him escape!
+Angus has been captured in a labyrinth, retained inside by a dangerous guard.
+You're his last chance to get out!
+Grab all elements distributed troughout the maze to anesthetize the jailer!
+Your legendary hero is on his way to survive one more time!
 """
+
+import pygame as pg
 
 import frontend as frtd
 import backend as bckd
+import settings as stg
 
 def main():
-    """ TODO : Docstring to be completed
+    """ Displayed elements are managed by the frontend package.
+    While on_air, the program will loop, waiting for user's inputs (keyboard's directional keys).
+    This part is treated by the backend package.
     """
     display = frtd.Window()
     display.load()
@@ -18,17 +27,14 @@ def main():
     background = display.screen.copy()
     frtd.sprites_gen(surfaces)
     macgyver = frtd.MovingObject.sprites['macgyver']
-    # pylint doesn't recognize pygame's members (QUIT, KEYDOWN... see below)
-    # pylint: disable-msg=no-member
     # allowed events management
-    frtd.pg.event.set_allowed((frtd.pg.QUIT, frtd.pg.KEYDOWN))
-    # pylint: enable-msg=no-member
+    pg.event.set_allowed((pg.QUIT, pg.KEYDOWN))
 
     # game time!
     on_air = True
     while on_air:
         # Frames Per Second definition
-        clock.tick(frtd.stg.FPS)
+        clock.tick(stg.FPS)
         display.screen.blit(background, (0, 0))
         frtd.MOTIONLESS_SPRITES.draw(display.screen)
         frtd.MOBILE_SPRITES.draw(display.screen)
@@ -42,8 +48,8 @@ def main():
             # wait for three seconds before closing display
             clock.tick(0.3)
             on_air = False
-        frtd.pg.display.update()
-        event = frtd.pg.event.wait()
+        pg.display.update()
+        event = pg.event.wait()
         on_air = bckd.get_events(event, on_air, macgyver)
 
 

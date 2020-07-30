@@ -52,8 +52,6 @@ def get_events(event, on_air, macgyver):
     MacGyver's collisions with other sprites are checked.
     """
     SYRINGE = frtd.MovingObject.sprites['syringe']
-# pylint doesn't recognize pygame's members (QUIT, KEYDOWN... see below)
-# pylint: disable-msg=no-member
     if event.type == pg.KEYDOWN:
         if event.key in (pg.K_DOWN, pg.K_KP2):
             macgyver.physical_move(0, 1)
@@ -75,7 +73,6 @@ def get_events(event, on_air, macgyver):
     # quit event definition
     elif event.type == pg.QUIT:
         on_air = False
-# pylint: enable-msg=no-member
     return on_air
 
 def main():

@@ -111,11 +111,8 @@ class Texture:
         """
         x_length = coordinates[2] - coordinates[0]
         y_length = coordinates[3] - coordinates[1]
-        # pylint doesn't understand pg.Surface call thus returns an arguments error
-        # pylint: disable-msg=too-many-function-args
         # creation of a new Surface with the cropped texture's horizontal and vertical dimensions
         cropped_texture_surface = pg.Surface((x_length, y_length))
-        # pylint: enable-msg=too-many-function-args
         # adding the cropped texture to the newly created Surface
         cropped_texture_surface.blit(texture_surface, (0, 0), coordinates)
         # for a window's definition of 600*600 and a 15*15 matrix:

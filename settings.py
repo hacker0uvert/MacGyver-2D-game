@@ -27,7 +27,16 @@ DEAD_MESSAGE_COLOR = (127, 30, 20)
 FONT_PROPORTION = 2.667
 FONT_SIZE = int(WINDOW_RESOLUTION[0] / len(WON_MESSAGE) * FONT_PROPORTION)
 # sprites are listed with their name, sprite.group name, and visibility boolean
-SPRITES_LIST = [('macgyver', 'mobile', True), ('guardian', 'motionless', True), ('needle', 'motionless', True), ('plastube', 'motionless', True), ('ether', 'motionless', True), ('syringe', 'motionless', False), ('dead', 'motionless', False), ('counter', 'motionless', True)]
+SPRITES_LIST = [
+    ('macgyver', 'mobile', True),
+    ('guardian', 'motionless', True),
+    ('needle', 'motionless', True),
+    ('plastube', 'motionless', True),
+    ('ether', 'motionless', True),
+    ('syringe', 'motionless', False),
+    ('dead', 'motionless', False),
+    ('counter', 'motionless', True)
+    ]
 
 def json_load(directory, json_file):
     """ Json file loading function
