@@ -35,7 +35,7 @@ SPRITES_LIST = [
     ('ether', 'motionless', True),
     ('syringe', 'motionless', False),
     ('dead', 'motionless', False),
-    ('counter', 'motionless', True)
+    ('counter', 'motionless', False)
     ]
 
 def json_load(directory, json_file):
