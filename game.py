@@ -16,6 +16,8 @@ import settings as stg
 
 def main():
     """ Displayed elements are managed by the frontend package.
+    Each frame, background is blitted, then sprites groups are drawn on the screen.
+    This way, sprites movements are taken into account.
     While on_air, the program will loop, waiting for user's inputs (keyboard's directional keys).
     This part is treated by the backend package.
     """
@@ -39,15 +41,9 @@ def main():
         frtd.MOTIONLESS_SPRITES.draw(display.screen)
         frtd.MOBILE_SPRITES.draw(display.screen)
         if macgyver.won:
-            display.print_end_message('won')
-            # wait for three seconds before closing display
-            clock.tick(0.3)
-            on_air = False
+            on_air = display.print_end_message('won')
         elif macgyver.dead:
-            display.print_end_message('lose')
-            # wait for three seconds before closing display
-            clock.tick(0.3)
-            on_air = False
+            on_air = display.print_end_message('lose')
         pg.display.update()
         event = pg.event.wait()
         on_air = bckd.get_events(event, on_air, macgyver)

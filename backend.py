@@ -22,11 +22,11 @@ class Labyrinth:
         self.corridors_coordinates = []
         self.counters_coordinates = []
 
-    def grid_gen(self):
+    @classmethod
+    def grid_gen(cls):
         """ Generates the grid statically
-        Labyrinth's walls are symbolised with 'W', corridors with 'c'.
+        Labyrinth's walls are symbolised with 'W', corridors with 'c', and counters with 'i'
         Drop and exit points are coordinates tuples.
-        Structure is stored in the "matrix.json" file
         """
         matrix_json = stg.json_load(stg.SCRIPT_DIR, stg.MATRIX_FILE)
         labyrinth_matrix = matrix_json['labyrinth_matrix']
@@ -50,8 +50,9 @@ class Labyrinth:
 def get_events(event, on_air, macgyver):
     """ Function used to manage pygame keyboard and quit events.
     MacGyver's collisions with other sprites are checked.
+    An index is returned, indicating the sprite with whom the collision took place.
     """
-    SYRINGE = frtd.MovingObject.sprites['syringe']
+    syringe = frtd.MovingObject.sprites['syringe']
     if event.type == pg.KEYDOWN:
         if event.key in (pg.K_DOWN, pg.K_KP2):
             macgyver.physical_move(0, 1)
@@ -66,10 +67,12 @@ def get_events(event, on_air, macgyver):
         collision_index = macgyver.rect.collidelist(frtd.MOTIONLESS_SPRITES.sprites())
         if collision_index != -1:
             frtd.MOTIONLESS_SPRITES.sprites()[collision_index].pick()
-            if 'needle' in frtd.PICKED_OBJECTS and 'ether' in frtd.PICKED_OBJECTS and 'plastube' in frtd.PICKED_OBJECTS and 'syringe' not in frtd.PICKED_OBJECTS:
-                SYRINGE.visible = True
-                SYRINGE.add_to_sprites()
-                SYRINGE.pick()
+            pk_obj = frtd.MovingObject.PICKED_OBJECTS
+            syringe_conditions = 'needle' in pk_obj and 'ether' in pk_obj and 'plastube' in pk_obj
+            if syringe_conditions and 'syringe' not in pk_obj:
+                syringe.visible = True
+                syringe.add_to_sprites()
+                syringe.pick()
     # quit event definition
     elif event.type == pg.QUIT:
         on_air = False

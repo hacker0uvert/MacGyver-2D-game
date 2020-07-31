@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-""" Module used to store game settings
+""" Module used to store game settings.
+Physical structures are imported from json files.
 """
 
 import json
@@ -17,16 +18,18 @@ SURFACES_FILE = 'surfaces.json'
 ICON_FILE = 'MacGyver.png'
 
 # parameters #
-WINDOW_RESOLUTION = (600, 600)
+RESOLUTION = 600
+WINDOW_RESOLUTION = (RESOLUTION, RESOLUTION)
 WINDOW_CAPTION = 'MacGyver-2D'
 FPS = 25
-WON_MESSAGE = "Well done, MacGyver has gone OUT!"
+WON_MESSAGE = "WOW, MacGyver has gone OUT!"
 WON_MESSAGE_COLOR = (34, 215, 255)
-DEAD_MESSAGE = "Well well well, MacGyver is DEAD!"
-DEAD_MESSAGE_COLOR = (127, 30, 20)
+DEAD_MESSAGE = "Well, MacGyver is DEAD!"
+DEAD_MESSAGE_COLOR = (52, 0, 0)
 
 def len_message():
-    """ Defines which one of WON_MESSAGE or DEAD_MESSAGE is the longest
+    """ Defines which one of WON_MESSAGE or DEAD_MESSAGE is the longest.
+    This allows them both to be fully printed onscreen whatever change happens.
     """
     won_msg_len = len(WON_MESSAGE)
     dead_msg_len = len(DEAD_MESSAGE)
@@ -39,8 +42,8 @@ def len_message():
     return returned_len
 
 # Font proportion has been calculated afer numerous tests, with different window resolutions.
-# Its value is dimensionned, so that in all test cases, full message is displayed on screen.
-FONT_PROPORTION = 2.667
+# Its value is dimensionned, so that in all test cases, full message can be displayed on screen.
+FONT_PROPORTION = 2.5
 FONT_SIZE = int(WINDOW_RESOLUTION[0] / len_message() * FONT_PROPORTION)
 # sprites are listed with their name, sprite.group name, and visibility boolean
 SPRITES_LIST = [

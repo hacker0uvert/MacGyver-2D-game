@@ -43,6 +43,13 @@ Use your keyboard's directional keys to move the hero in the labyrinth.
 * the window will close after three seconds in case you win or lose
 * at any time, you can press `<escape>` or `<alt+F4>`
 
+## game edition
+If you would like to play with others characteristics (for example change the window's definition), you can do so by editing `settings.py` file.  
+The game has been developed in a logic where **horizontal and vertical definitions are equal.**  
+In case you would like to change this, *you will have to code what's necessary therefore.*  
+
+Other settings are stored or called from within this same `settings.py` file, feel free to have a look at it!
+
 ## pylint linting
 As pygame is coded among others in C language, pylint won't load it by default.
 This is resulting in errors like: 

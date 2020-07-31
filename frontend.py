@@ -5,19 +5,19 @@
 MovingObject is used to add functionnalities to the native Pygame Sprite class.
 """
 
-import os, random
+import os
+import random
 
 import pygame as pg
 
 import backend as bckd
 import settings as stg
 
-RESOURCES_DIR = stg.RESOURCES_DIR
 LABYRINTH = bckd.Labyrinth()
 CLOCK = pg.time.Clock()
 MOTIONLESS_SPRITES = pg.sprite.Group()
 MOBILE_SPRITES = pg.sprite.Group()
-PICKED_OBJECTS = []
+BX_PX_LN = LABYRINTH.box_px_len
 
 class Window:
     """ Physical window management
@@ -26,10 +26,11 @@ class Window:
     def __init__(self):
         """ Window class initiator
         """
-        self.resources_dir = RESOURCES_DIR
         self.icon_file = stg.ICON_FILE
         self.window_resolution = stg.WINDOW_RESOLUTION
         self.window_caption = stg.WINDOW_CAPTION
+        # set_mode needs a pygame display init. pylint raises a "defined outside __init__" warning.
+        self.screen = None
 
     def load(self):
         """ Window loading function
@@ -42,7 +43,7 @@ class Window:
     def icon(self):
         """ Window icon's loading function
         """
-        with open(os.path.join(self.resources_dir, self.icon_file), 'r') as file:
+        with open(os.path.join(stg.RESOURCES_DIR, self.icon_file), 'r') as file:
             ico = pg.image.load(file)
         pg.display.set_icon(ico)
 
@@ -52,26 +53,27 @@ class Window:
         'c' stands for 'corridor'
         'i' for 'items_counter'
         """
-        x_iterator, y_iterator = 0, 0
-        while y_iterator in range(LABYRINTH.grid_len):
-            while x_iterator in range(LABYRINTH.grid_len):
-                if LABYRINTH.labyrinth_matrix[y_iterator][x_iterator] == 'W':
-                    self.screen.blit(surfaces['wall'], (x_iterator*LABYRINTH.box_px_len, y_iterator*LABYRINTH.box_px_len))
-                elif LABYRINTH.labyrinth_matrix[y_iterator][x_iterator] == 'c':
-                    self.screen.blit(surfaces['corridor'], (x_iterator*LABYRINTH.box_px_len, y_iterator*LABYRINTH.box_px_len))
+        lab = LABYRINTH
+        x_itr, y_itr = 0, 0
+        while y_itr in range(lab.grid_len):
+            while x_itr in range(lab.grid_len):
+                if lab.labyrinth_matrix[y_itr][x_itr] == 'W':
+                    self.screen.blit(surfaces['wall'], (x_itr*BX_PX_LN, y_itr*BX_PX_LN))
+                elif lab.labyrinth_matrix[y_itr][x_itr] == 'c':
+                    self.screen.blit(surfaces['corridor'], (x_itr*BX_PX_LN, y_itr*BX_PX_LN))
                     # corridors coordinates list generation
-                    LABYRINTH.corridors_coordinates.append((x_iterator, y_iterator))
-                elif LABYRINTH.labyrinth_matrix[y_iterator][x_iterator] == 'i':
-                    self.screen.blit(surfaces['counter'], (x_iterator*LABYRINTH.box_px_len, y_iterator*LABYRINTH.box_px_len))
+                    lab.corridors_coordinates.append((x_itr, y_itr))
+                elif lab.labyrinth_matrix[y_itr][x_itr] == 'i':
+                    self.screen.blit(surfaces['counter'], (x_itr*BX_PX_LN, y_itr*BX_PX_LN))
                     # counter coordinates list generation
-                    LABYRINTH.counters_coordinates.append((x_iterator, y_iterator))
-                x_iterator += 1
-            y_iterator += 1
-            x_iterator = 0
+                    lab.counters_coordinates.append((x_itr, y_itr))
+                x_itr += 1
+            y_itr += 1
+            x_itr = 0
         pg.display.flip()
-        # drop_point and exit_point coordinates tuples remove from LABYRINTH.corridors_coordinates
-        LABYRINTH.corridors_coordinates.remove(LABYRINTH.drop_point)
-        LABYRINTH.corridors_coordinates.remove(LABYRINTH.exit_point)
+        # drop_point and exit_point coordinates tuples remove from lab.corridors_coordinates
+        lab.corridors_coordinates.remove(lab.drop_point)
+        lab.corridors_coordinates.remove(lab.exit_point)
 
     def print_end_message(self, exit_status):
         """ Method used to define and print won message onscreen.
@@ -83,9 +85,13 @@ class Window:
             font_surface = font.render(stg.WON_MESSAGE, True, stg.WON_MESSAGE_COLOR)
         elif exit_status == 'lose':
             font_surface = font.render(stg.DEAD_MESSAGE, True, stg.DEAD_MESSAGE_COLOR)
-        font_rect = font_surface.get_rect()
+        font_rect = font_surface.get_rect(center=(stg.RESOLUTION/2, stg.RESOLUTION/2))
         self.screen.blit(font_surface, font_rect)
         pg.display.update()
+        # wait for three seconds before closing display
+        CLOCK.tick(0.3)
+        on_air = False
+        return on_air
 
 
 class Texture:
@@ -95,14 +101,11 @@ class Texture:
     def __init__(self):
         """ Class initiator
         """
-        self.script_dir = stg.SCRIPT_DIR
-        self.surfaces_file = stg.SURFACES_FILE
-        self.resources_dir = RESOURCES_DIR
 
     def surface_load(self, img_file):
         """ Texture surface image loading function
         """
-        with open(os.path.join(self.resources_dir, img_file), 'r') as file:
+        with open(os.path.join(stg.RESOURCES_DIR, img_file), 'r') as file:
             texture_surface = pg.image.load(file).convert_alpha()
         return texture_surface
 
@@ -118,7 +121,7 @@ class Texture:
         # for a window's definition of 600*600 and a 15*15 matrix:
         # converting the Surface to a 40*40 pixels rectangle, so as to correspond
         # to window's 600*600 pixels definition: 15*15 texture rectangles matrix
-        cropped_texture_surface = pg.transform.scale(cropped_texture_surface, (LABYRINTH.box_px_len, LABYRINTH.box_px_len))
+        cropped_texture_surface = pg.transform.scale(cropped_texture_surface, (BX_PX_LN, BX_PX_LN))
         return cropped_texture_surface
 
     def get_surface(self, img_file, coordinates):
@@ -131,7 +134,7 @@ class Texture:
     def load_surfaces_json(self):
         """ Surfaces dictionary loading function, from json file
         """
-        surfaces_json = stg.json_load(self.script_dir, self.surfaces_file)
+        surfaces_json = stg.json_load(stg.SCRIPT_DIR, stg.SURFACES_FILE)
         return surfaces_json
 
 
@@ -140,12 +143,14 @@ class MovingObject(pg.sprite.Sprite):
     """
 
     sprites = {}
+    PICKED_OBJECTS = []
 
     def __init__(self, name, surface, group, visible):
         """ Class initiator.
         MacGyver and Guardian are respectively positionned on drop_point and exit_point.
         Ether, needle and plastube sprites are randomly dropped in the corridors.
-        Above actions are applied to each element thanks to the name argument, which enables sprite recognition.
+        Above actions are applied to each element thanks to the name argument,
+        which enables sprite recognition.
         """
         pg.sprite.Sprite.__init__(self)
         # value used to define if object has been collected by MacGyver
@@ -187,28 +192,32 @@ class MovingObject(pg.sprite.Sprite):
         Object is deleted from SPRITES group, as it mustn't be blitted on the screen anymore.
         """
         if self.name in ('ether', 'needle', 'plastube', 'syringe'):
-            self.physical_move(0, 0, corridor = False)
-            PICKED_OBJECTS.append(self.name)
+            self.physical_move(0, 0, corridor=False)
+            MovingObject.PICKED_OBJECTS.append(self.name)
 
 
-    def physical_move(self, x_case_move, y_case_move, corridor = True):
-        """ Movement from present physical position to x_case_move horizontal, y_case_move vertical new cases (negative move authorised).
-        x_move and y_move correspond to the same movement, converted into pixels, depending on the current display size and number of grid cases.
+    def physical_move(self, x_case_move, y_case_move, corridor=True):
+        """ Movement from present physical position to x_case_move horizontal,
+        y_case_move vertical new cases (negative move authorised).
+        x_move and y_move correspond to the same movement, converted into pixels,
+        depending on the current display size and number of grid cases.
         New coordinates are verified, so that sprite can't get out of display.
         """
-        if corridor == False:
+        if not corridor:
             coordinates = LABYRINTH.counters_coordinates.pop(0)
-            x_new_coordinates = coordinates[0] * LABYRINTH.box_px_len
-            y_new_coordinates = coordinates[1] * LABYRINTH.box_px_len
+            x_new_coordinates = coordinates[0] * BX_PX_LN
+            y_new_coordinates = coordinates[1] * BX_PX_LN
             x_move = x_new_coordinates - self.rect.x
             y_move = y_new_coordinates - self.rect.y
             move_boolean = True
-        elif corridor == True:
-            x_move = x_case_move * LABYRINTH.box_px_len
-            y_move = y_case_move * LABYRINTH.box_px_len
+        elif corridor:
+            x_move = x_case_move * BX_PX_LN
+            y_move = y_case_move * BX_PX_LN
             x_new_coordinates = self.rect.x + x_move
             y_new_coordinates = self.rect.y + y_move
-            if x_new_coordinates <= (stg.WINDOW_RESOLUTION[0] - LABYRINTH.box_px_len) and x_new_coordinates >= 0 and y_new_coordinates <= (stg.WINDOW_RESOLUTION[1] - LABYRINTH.box_px_len) and y_new_coordinates >= 0:
+            x_cond = x_new_coordinates <= (stg.WINDOW_RESOLUTION[0] - BX_PX_LN)
+            y_cond = y_new_coordinates <= (stg.WINDOW_RESOLUTION[1] - BX_PX_LN)
+            if x_cond and x_new_coordinates >= 0 and y_cond and y_new_coordinates >= 0:
                 move_boolean = self.check_if_corridor(x_new_coordinates, y_new_coordinates)
         if move_boolean:
             self.rect.move_ip(x_move, y_move)
@@ -227,12 +236,12 @@ class MovingObject(pg.sprite.Sprite):
         This is to ensure that sprites are unable to get threw or on a wall.
         grid_case is a tuple, corresponding to the grid's case position in the labyrinth_matrix.
         """
-        grid_case = (int(x_coordinates / LABYRINTH.box_px_len), int(y_coordinates / LABYRINTH.box_px_len))
+        grid_case = (int(x_coordinates / BX_PX_LN), int(y_coordinates / BX_PX_LN))
         case_texture = LABYRINTH.labyrinth_matrix[grid_case[1]][grid_case[0]]
         if case_texture == 'c':
             corridor = True
             if (grid_case == LABYRINTH.exit_point and self.name == 'macgyver'):
-                if 'syringe' in PICKED_OBJECTS:
+                if 'syringe' in MovingObject.PICKED_OBJECTS:
                     self.won = True
                 else:
                     self.dead = True
@@ -245,7 +254,7 @@ class MovingObject(pg.sprite.Sprite):
         """ Random coordinates generation, in labyrinth_matrix's coordinates range
         """
         if len(LABYRINTH.corridors_coordinates) < 1:
-            raise ValueError("Not enough corridors available to generate syringe's items. Please check matrix.json's configuration or relay this message to the app's developer")
+            raise ValueError("Not enough corridors available to generate syringe's items.")
         i = random.randint(0, len(LABYRINTH.corridors_coordinates) - 1)
         coordinates = LABYRINTH.corridors_coordinates.pop(i)
         x_coord, y_coord = coordinates[0], coordinates[1]
