@@ -7,7 +7,7 @@
 import pygame as pg
 
 import settings as stg
-import frontend as frtd
+import frontend.movingobject as mvobj
 
 class Labyrinth:
     """ Generation and interactions with the grid labyrinth on which the game is played
@@ -52,7 +52,7 @@ def get_events(event, on_air, macgyver):
     MacGyver's collisions with other sprites are checked.
     An index is returned, indicating the sprite with whom the collision took place.
     """
-    syringe = frtd.MovingObject.sprites['syringe']
+    syringe = mvobj.MovingObject.sprites['syringe']
     if event.type == pg.KEYDOWN:
         if event.key in (pg.K_DOWN, pg.K_KP2):
             macgyver.physical_move(0, 1)
@@ -64,10 +64,10 @@ def get_events(event, on_air, macgyver):
             macgyver.physical_move(1, 0)
         elif event.key == pg.K_ESCAPE:
             on_air = False
-        collision_index = macgyver.rect.collidelist(frtd.MOTIONLESS_SPRITES.sprites())
+        collision_index = macgyver.rect.collidelist(mvobj.MOTIONLESS_SPRITES.sprites())
         if collision_index != -1:
-            frtd.MOTIONLESS_SPRITES.sprites()[collision_index].pick()
-            pk_obj = frtd.MovingObject.PICKED_OBJECTS
+            mvobj.MOTIONLESS_SPRITES.sprites()[collision_index].pick()
+            pk_obj = mvobj.MovingObject.picked_objects
             syringe_conditions = 'needle' in pk_obj and 'ether' in pk_obj and 'plastube' in pk_obj
             if syringe_conditions and 'syringe' not in pk_obj:
                 syringe.visible = True

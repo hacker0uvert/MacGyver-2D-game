@@ -10,7 +10,9 @@ Your legendary hero is on his way to survive one more time!
 
 import pygame as pg
 
-import frontend as frtd
+import frontend.window as wdw
+import frontend.main as frtd
+import frontend.movingobject as mvobj
 import backend as bckd
 import settings as stg
 
@@ -21,14 +23,14 @@ def main():
     While on_air, the program will loop, waiting for user's inputs (keyboard's directional keys).
     This part is treated by the backend package.
     """
-    display = frtd.Window()
+    display = wdw.Window()
     display.load()
     surfaces = frtd.surfaces_dict()
-    clock = frtd.CLOCK
+    clock = wdw.CLOCK
     display.background_init(surfaces)
     background = display.screen.copy()
     frtd.sprites_gen(surfaces)
-    macgyver = frtd.MovingObject.sprites['macgyver']
+    macgyver = mvobj.MovingObject.sprites['macgyver']
     # allowed events management
     pg.event.set_allowed((pg.QUIT, pg.KEYDOWN))
 
@@ -38,8 +40,8 @@ def main():
         # Frames Per Second definition
         clock.tick(stg.FPS)
         display.screen.blit(background, (0, 0))
-        frtd.MOTIONLESS_SPRITES.draw(display.screen)
-        frtd.MOBILE_SPRITES.draw(display.screen)
+        mvobj.MOTIONLESS_SPRITES.draw(display.screen)
+        mvobj.MOBILE_SPRITES.draw(display.screen)
         if macgyver.won:
             on_air = display.print_end_message('won')
         elif macgyver.dead:
