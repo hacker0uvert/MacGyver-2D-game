@@ -1,20 +1,18 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-""" Frontend package: MovingObject module is used to enhance native Pygame's Sprite class functions.
+""" Frontend package: MovingObject module is used to enhance native Pygame's Sprite class methods.
 """
 
 import random
 
 import pygame as pg
 
-import backend as bckd
-import settings as stg
+from frontend import window as wdw
+from resources import settings as stg
 
-LABYRINTH = bckd.Labyrinth()
 MOTIONLESS_SPRITES = pg.sprite.Group()
 MOBILE_SPRITES = pg.sprite.Group()
-BX_PX_LN = LABYRINTH.box_px_len
 
 class MovingObject(pg.sprite.Sprite):
     """ Sprites (characters and objects) management
@@ -31,24 +29,24 @@ class MovingObject(pg.sprite.Sprite):
         which enables sprite recognition.
         """
         pg.sprite.Sprite.__init__(self)
-        # value used to define if object has been collected by MacGyver
         self.name = name
-        self.group = group
-        self.visible = visible
         self.image = surface
+        self.group = group
         self.rect_def()
-        self.sprites[self.name] = self
-        if self.visible:
+        MovingObject.sprites[self.name] = self
+        if visible:
             self.add_to_sprites()
         if self.name == 'macgyver':
             self.direction = 'right'
-            self.right_image = self.image
-            self.left_image = pg.transform.flip(self.image, True, False)
-            self.physical_move(LABYRINTH.drop_point[0], LABYRINTH.drop_point[1])
-            self.won = False
-            self.dead = False
+            self.images = {}
+            self.images['right'] = self.image
+            self.images['left'] = pg.transform.flip(self.image, True, False)
+            self.physical_move(wdw.LABYRINTH.drop_point[0], wdw.LABYRINTH.drop_point[1])
+            self.states = {}
+            self.states['won'] = False
+            self.states['dead'] = False
         if self.name == 'guardian':
-            self.physical_move(LABYRINTH.exit_point[0], LABYRINTH.exit_point[1])
+            self.physical_move(wdw.LABYRINTH.exit_point[0], wdw.LABYRINTH.exit_point[1])
         if self.name in ('ether', 'needle', 'plastube'):
             self.random_coordinates()
 
@@ -82,19 +80,19 @@ class MovingObject(pg.sprite.Sprite):
         New coordinates are verified, so that sprite can't get out of display.
         """
         if not corridor:
-            coordinates = LABYRINTH.counters_coordinates.pop(0)
-            x_new_coordinates = coordinates[0] * BX_PX_LN
-            y_new_coordinates = coordinates[1] * BX_PX_LN
+            coordinates = wdw.LABYRINTH.counters_coordinates.pop(0)
+            x_new_coordinates = coordinates[0] * wdw.BX_PX_LN
+            y_new_coordinates = coordinates[1] * wdw.BX_PX_LN
             x_move = x_new_coordinates - self.rect.x
             y_move = y_new_coordinates - self.rect.y
             move_boolean = True
         elif corridor:
-            x_move = x_case_move * BX_PX_LN
-            y_move = y_case_move * BX_PX_LN
+            x_move = x_case_move * wdw.BX_PX_LN
+            y_move = y_case_move * wdw.BX_PX_LN
             x_new_coordinates = self.rect.x + x_move
             y_new_coordinates = self.rect.y + y_move
-            x_cond = x_new_coordinates <= (stg.WINDOW_RESOLUTION[0] - BX_PX_LN)
-            y_cond = y_new_coordinates <= (stg.WINDOW_RESOLUTION[1] - BX_PX_LN)
+            x_cond = x_new_coordinates <= (stg.WINDOW_RESOLUTION[0] - wdw.BX_PX_LN)
+            y_cond = y_new_coordinates <= (stg.WINDOW_RESOLUTION[1] - wdw.BX_PX_LN)
             if x_cond and x_new_coordinates >= 0 and y_cond and y_new_coordinates >= 0:
                 move_boolean = self.check_if_corridor(x_new_coordinates, y_new_coordinates)
         if move_boolean:
@@ -103,10 +101,10 @@ class MovingObject(pg.sprite.Sprite):
             if self.name == 'macgyver':
                 if x_move < 0 and self.direction == 'right':
                     self.direction = 'left'
-                    self.image = self.left_image
+                    self.image = self.images[self.direction]
                 elif x_move > 0 and self.direction == 'left':
                     self.direction = 'right'
-                    self.image = self.right_image
+                    self.image = self.images[self.direction]
 
 
     def check_if_corridor(self, x_coordinates, y_coordinates):
@@ -114,15 +112,15 @@ class MovingObject(pg.sprite.Sprite):
         This is to ensure that sprites are unable to get threw or on a wall.
         grid_case is a tuple, corresponding to the grid's case position in the labyrinth_matrix.
         """
-        grid_case = (int(x_coordinates / BX_PX_LN), int(y_coordinates / BX_PX_LN))
-        case_texture = LABYRINTH.labyrinth_matrix[grid_case[1]][grid_case[0]]
+        grid_case = (int(x_coordinates / wdw.BX_PX_LN), int(y_coordinates / wdw.BX_PX_LN))
+        case_texture = wdw.LABYRINTH.labyrinth_matrix[grid_case[1]][grid_case[0]]
         if case_texture == 'c':
             corridor = True
-            if (grid_case == LABYRINTH.exit_point and self.name == 'macgyver'):
+            if (grid_case == wdw.LABYRINTH.exit_point and self.name == 'macgyver'):
                 if 'syringe' in MovingObject.picked_objects:
-                    self.won = True
+                    self.states['won'] = True
                 else:
-                    self.dead = True
+                    self.states['dead'] = True
                     self.image = MovingObject.sprites['dead'].image
         else:
             corridor = False
@@ -131,9 +129,9 @@ class MovingObject(pg.sprite.Sprite):
     def random_coordinates(self):
         """ Random coordinates generation, in labyrinth_matrix's coordinates range
         """
-        if len(LABYRINTH.corridors_coordinates) < 1:
+        if len(wdw.LABYRINTH.corridors_coordinates) < 1:
             raise ValueError("Not enough corridors available to generate syringe's items.")
-        i = random.randint(0, len(LABYRINTH.corridors_coordinates) - 1)
-        coordinates = LABYRINTH.corridors_coordinates.pop(i)
+        i = random.randint(0, len(wdw.LABYRINTH.corridors_coordinates) - 1)
+        coordinates = wdw.LABYRINTH.corridors_coordinates.pop(i)
         x_coord, y_coord = coordinates[0], coordinates[1]
         self.physical_move(x_coord, y_coord)

@@ -10,7 +10,6 @@ import os
 
 # directories #
 SCRIPT_DIR = os.path.split(os.path.abspath(__file__))[0]
-RESOURCES_DIR = os.path.join(SCRIPT_DIR, 'resources')
 
 # files #
 MATRIX_FILE = 'matrix.json'

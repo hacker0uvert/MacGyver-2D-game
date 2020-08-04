@@ -8,8 +8,8 @@ import os
 
 import pygame as pg
 
-import backend as bckd
-import settings as stg
+from backend import labyrinth as bckd
+from resources import settings as stg
 
 LABYRINTH = bckd.Labyrinth()
 BX_PX_LN = LABYRINTH.box_px_len
@@ -21,25 +21,24 @@ class Window:
 
     def __init__(self):
         """ Window class initiator
+        set_mode needs a pygame display init. Pylint raises a "defined outside __init__" warning
+        if self.screen is initialised from Window.load()
         """
-        self.icon_file = stg.ICON_FILE
-        self.window_resolution = stg.WINDOW_RESOLUTION
-        self.window_caption = stg.WINDOW_CAPTION
-        # set_mode needs a pygame display init. pylint raises a "defined outside __init__" warning.
         self.screen = None
 
     def load(self):
-        """ Window loading function
+        """ Window loading method
         """
         pg.display.init()
-        self.screen = pg.display.set_mode(self.window_resolution)
-        pg.display.set_caption(self.window_caption)
-        self.icon()
+        self.screen = pg.display.set_mode(stg.WINDOW_RESOLUTION)
+        pg.display.set_caption(stg.WINDOW_CAPTION)
+        Window.icon()
 
-    def icon(self):
-        """ Window icon's loading function
+    @classmethod
+    def icon(cls):
+        """ Window icon's loading method
         """
-        with open(os.path.join(stg.RESOURCES_DIR, self.icon_file), 'r') as file:
+        with open(os.path.join(stg.SCRIPT_DIR, stg.ICON_FILE), 'r') as file:
             ico = pg.image.load(file)
         pg.display.set_icon(ico)
 
@@ -49,27 +48,27 @@ class Window:
         'c' stands for 'corridor'
         'i' for 'items_counter'
         """
-        lab = LABYRINTH
         x_itr, y_itr = 0, 0
-        while y_itr in range(lab.grid_len):
-            while x_itr in range(lab.grid_len):
-                if lab.labyrinth_matrix[y_itr][x_itr] == 'W':
+        while y_itr in range(LABYRINTH.grid_len):
+            while x_itr in range(LABYRINTH.grid_len):
+                if LABYRINTH.labyrinth_matrix[y_itr][x_itr] == 'W':
                     self.screen.blit(surfaces['wall'], (x_itr*BX_PX_LN, y_itr*BX_PX_LN))
-                elif lab.labyrinth_matrix[y_itr][x_itr] == 'c':
+                elif LABYRINTH.labyrinth_matrix[y_itr][x_itr] == 'c':
                     self.screen.blit(surfaces['corridor'], (x_itr*BX_PX_LN, y_itr*BX_PX_LN))
                     # corridors coordinates list generation
-                    lab.corridors_coordinates.append((x_itr, y_itr))
-                elif lab.labyrinth_matrix[y_itr][x_itr] == 'i':
+                    LABYRINTH.corridors_coordinates.append((x_itr, y_itr))
+                elif LABYRINTH.labyrinth_matrix[y_itr][x_itr] == 'i':
                     self.screen.blit(surfaces['counter'], (x_itr*BX_PX_LN, y_itr*BX_PX_LN))
                     # counter coordinates list generation
-                    lab.counters_coordinates.append((x_itr, y_itr))
+                    LABYRINTH.counters_coordinates.append((x_itr, y_itr))
                 x_itr += 1
             y_itr += 1
             x_itr = 0
         pg.display.flip()
-        # drop_point and exit_point coordinates tuples remove from lab.corridors_coordinates
-        lab.corridors_coordinates.remove(lab.drop_point)
-        lab.corridors_coordinates.remove(lab.exit_point)
+        # drop_point and exit_point coordinates tuples remove from LABYRINTH.corridors_coordinates
+        # so MovingObject.random_coordinates() won't use those coordinates
+        LABYRINTH.corridors_coordinates.remove(LABYRINTH.drop_point)
+        LABYRINTH.corridors_coordinates.remove(LABYRINTH.exit_point)
 
     def print_end_message(self, exit_status):
         """ Method used to define and print won message onscreen.
@@ -88,4 +87,3 @@ class Window:
         CLOCK.tick(0.3)
         on_air = False
         return on_air
-        
