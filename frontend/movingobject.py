@@ -79,6 +79,7 @@ class MovingObject(pg.sprite.Sprite):
         depending on the current display size and number of grid cases.
         New coordinates are verified, so that sprite can't get out of display.
         """
+        # case used when item is to be moved to counter, specified with false corridor boolean
         if not corridor:
             coordinates = wdw.LABYRINTH.counters_coordinates.pop(0)
             x_new_coordinates = coordinates[0] * wdw.BX_PX_LN
@@ -86,11 +87,13 @@ class MovingObject(pg.sprite.Sprite):
             x_move = x_new_coordinates - self.rect.x
             y_move = y_new_coordinates - self.rect.y
             move_boolean = True
+        # case for classical sprite movements
         elif corridor:
             x_move = x_case_move * wdw.BX_PX_LN
             y_move = y_case_move * wdw.BX_PX_LN
             x_new_coordinates = self.rect.x + x_move
             y_new_coordinates = self.rect.y + y_move
+            # horizontal and vertical out of display checking conditions
             x_cond = x_new_coordinates <= (stg.WINDOW_RESOLUTION[0] - wdw.BX_PX_LN)
             y_cond = y_new_coordinates <= (stg.WINDOW_RESOLUTION[1] - wdw.BX_PX_LN)
             if x_cond and x_new_coordinates >= 0 and y_cond and y_new_coordinates >= 0:
@@ -101,10 +104,9 @@ class MovingObject(pg.sprite.Sprite):
             if self.name == 'macgyver':
                 if x_move < 0 and self.direction == 'right':
                     self.direction = 'left'
-                    self.image = self.images[self.direction]
                 elif x_move > 0 and self.direction == 'left':
                     self.direction = 'right'
-                    self.image = self.images[self.direction]
+                self.image = self.images[self.direction]
 
 
     def check_if_corridor(self, x_coordinates, y_coordinates):
