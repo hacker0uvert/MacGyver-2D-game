@@ -36,9 +36,9 @@ class Texture:
         Values are defined from surfaces_json dict.
         """
         cls.surfaces = {}
-        Texture.load_surfaces_json()
-        for i in Texture.surfaces_json:
-            texture = Texture(Texture.surfaces_json[i][0], Texture.surfaces_json[i][1])
+        cls.load_surfaces_json()
+        for i in cls.surfaces_json:
+            texture = cls(cls.surfaces_json[i][0], cls.surfaces_json[i][1])
             surface = texture.cropped_texture_surface
             cls.surfaces[i] = surface
 
